@@ -1,0 +1,967 @@
+openapi: 3.0.3
+info:
+  title: Ski Rent Api
+  version: "0.1"
+tags:
+  - name: Items
+    description: Operations related to items
+  - name: Maintenances
+    description: Operations related to maintenances
+  - name: Rentals
+    description: Operations related to rentals
+paths:
+  /items:
+    post:
+      tags:
+        - Items
+      summary: Add new item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Request_AddItem'
+      responses:
+        '200':
+          description: Item added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetId'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    get:
+      tags:
+        - Items
+      summary: Get multiple items paginated and filtered
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          required: false
+        - in: query
+          name: category
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+        - in: query
+          name: status
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ItemStatusTypeEnum'
+          required: false
+        - in: query
+          name: damaged
+          schema:
+            type: boolean
+          required: false
+      responses:
+        '200':
+          description: Item retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetMultipleItems'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /items/{id}:
+    get:
+      tags:
+        - Items
+      summary: Get single item by Id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleItem'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    put:
+      summary: Update item by id
+      tags:
+        - Items
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_UpdateItem'
+      responses:
+        '200':
+          description: Item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleItem'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    delete:
+      summary: Delete item by id
+      tags:
+        - Items
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Item deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetId'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /items/{id}/maintenances:
+    post:
+      summary: Add maintenance to item
+      tags:
+        - Maintenances
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Request_AddMaintenance'
+      responses:
+        '200':
+          description: Maintenance record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleMaintenance'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    get:
+      summary: Get maintenance records for item
+      tags:
+        - Maintenances
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          required: false
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/MaintenanceTypeEnum'
+          required: false
+      responses:
+        '200':
+          description: Maintenances retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetMultipleMaintenances'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /maintenances:
+    get:
+      summary: Get multiple maintenances paginated and filtered
+      tags:
+        - Maintenances
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          required: false
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/MaintenanceTypeEnum'
+          required: false
+      responses:
+        '200':
+          description: Get multiple maintenance records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetMultipleMaintenances'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /maintenances/{id}:
+    get:
+      summary: Get single maintenance record by id
+      tags:
+        - Maintenances
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Maintenance retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleMaintenance'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    put:
+      summary: Update maintenance record by id
+      tags:
+        - Maintenances
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_UpdateMaintenance'
+      responses:
+        '200':
+          description: Maintenance updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleMaintenance'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    delete:
+      summary: Delete maintenance record by id
+      tags:
+        - Maintenances
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Maintenance deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetId'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /itemCheck:
+    post:
+      summary: Check items status and put available to cache
+      tags:
+        - Rentals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_ItemCheck'
+      responses:
+        '200':
+          description: Item check successfully run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_ItemCheck'
+  /items/{id}/rentals:
+    get:
+      summary: Get multiple simple rental records paginated for specific item
+      tags:
+        - Rentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          required: false
+        - in: query
+          name: open
+          schema:
+            type: boolean
+          required: false
+      responses:
+        '200':
+          description: Simple rental recieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSimpleRentalsForItem'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /rentals:
+    post:
+      tags:
+        - Rentals
+      summary: Create new rental record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_CreateRental'
+      responses:
+        '200':
+          description: Rental created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_CreateRental'
+  /rentals/{id}:
+    get:
+      tags:
+        - Rentals
+      summary: Get rental with full info
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rental retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleRental'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+    put:
+      tags:
+        - Rentals
+      summary: Update rental price
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_UpdateRental'
+      responses:
+        '200':
+          description: Rental updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleRental'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /rentals/{id}/close:
+    post:
+      tags:
+        - Rentals
+      summary: Close rental
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_CloseRental'
+      responses:
+        '200':
+          description: Rental closed successfully
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+
+components:
+  schemas:
+    CurrentDate:
+      description: Current date
+      type: string
+      format: date
+    Error:
+      description: Returned error
+      type: object
+      properties:
+        category:
+          description: Error category
+          type: string
+          example: Input Error
+        type:
+          description: Error type
+          type: string
+          example: Empty Field
+        message:
+          description: Error message
+          type: string
+          example: Missing field array[0].exampleField
+    Errors:
+      description: Returned errors
+      type: array
+      items:
+        $ref: '#/components/schemas/Error'
+    ItemStatusTypeEnum:
+      description: Item rental status
+      enum:
+      - RENTED
+      - PENDING
+      - AVAILABLE
+      example: AVAILABLE
+    MaintenanceTypeEnum:
+      description: Maintenance type enum
+      enum:
+      - INFO
+      - REPAIR
+      - DAMAGE
+      example: INFO
+    Price:
+      description: Price schema
+      required:
+        - priceAmount
+        - priceCurrency
+      properties:
+        priceAmount:
+          type: number
+          description: Price amount
+          example: 99.99
+        priceCurrency:
+          type: string
+          description: Price currency
+          pattern: '^[A-Z]{3}$'
+          example: PLN
+    Request_AddItem:
+      description: Schema for adding new item
+      type: object
+      required:
+        - name
+        - category
+        - price
+      properties:
+        name:
+          description: Visible name of item
+          type: string
+          example: Pink helmet
+        category:
+          description: Item category
+          type: string
+          example: Ski
+        price:
+          $ref: '#/components/schemas/Price'
+    Request_UpdateItem:
+      description: Schema for updating existing item
+      type: object
+      properties:
+        name:
+          type: string
+          example: Pink Ski
+        category:
+          type: string
+          example: Ski
+        price:
+          $ref: '#/components/schemas/Price'
+    Request_AddMaintenance:
+      description: Schema for adding new maintenance
+      type: object
+      required:
+        - type
+        - note
+      properties:
+        type:
+          $ref: '#/components/schemas/MaintenanceTypeEnum'
+        note:
+          type: string
+          example: Everything is ok
+    Request_UpdateMaintenance:
+      description: Schema for meintenance record update
+      required:
+        - note
+      properties:
+        note:
+          type: string
+          example: Everything is OK
+    Request_ItemCheck:
+      description: Schema for item check
+      required:
+        - itins
+      properties:
+        itins:
+          type: array
+          description: Item ids
+          items:
+            type: integer
+        key:
+          type: string
+          description: Key to cache
+          default: null
+    Request_CreateRental:
+      description: Schema for adding rental
+      required:
+        - key
+        - itins
+        - buyer
+        - paid
+      properties:
+        key:
+          type: string
+          example: 421a-4asd-341a
+        itins:
+          type: array
+          items:
+            type: integer
+          example: [1,5,3,2]
+        buyer:
+          $ref: '#/components/schemas/BuyerEntity'
+        paid:
+          $ref: '#/components/schemas/Price'
+    Request_UpdateRental:
+      description: Schema for rental record (price) update
+      anyOf:
+        - required:
+            - price
+        - required:
+            - paidPrice
+      properties:
+        price:
+          $ref: '#/components/schemas/Price'
+        paidPrice:
+          $ref: '#/components/schemas/Price'
+    Request_CloseRental:
+      description: Schema for closing rental
+      properties:
+        itemsMaintenance:
+          description: info about damaged maintenance
+          type: array
+          items:
+            $ref: '#/components/schemas/MaintenanceOnRentalEndEntity'
+
+    ItemEntity:
+      description: Returned item record
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - addDate
+        - lastMaintenance
+        - lastRental
+        - status
+        - damaged
+      properties:
+        id:
+          description: Item id
+          type: integer
+          example: 21
+        name:
+          description: Item name
+          type: string
+          example: Pink helmet
+        category:
+          description: Item category
+          type: string
+          example: Ski
+        addDate:
+          description: Item add date
+          type: string
+          format: date
+          example: 2025-12-12
+        lastMaintenance:
+          description: Item last maintenance date
+          type: string
+          format: date
+          example: 2025-12-12
+        lastRental:
+          description: Item last rental date
+          type: string
+          format: date
+          example: 2025-12-12
+        status:
+          $ref: '#/components/schemas/ItemStatusTypeEnum'
+        damaged:
+          description: Item damaged status
+          type: boolean
+          example: false
+        price:
+          $ref: '#/components/schemas/Price'
+    MaintenanceEntity:
+      description: Schema of maintenance record
+      type: object
+      required:
+        - id
+        - itemId
+        - type
+        - date
+        - note
+      properties:
+        id:
+          type: integer
+          description: Maintenance id
+          example: 15
+        itemId:
+          type: integer
+          description: Item id
+          example: 21
+        type:
+          $ref: '#/components/schemas/MaintenanceTypeEnum'
+        date:
+          type: string
+          description: Maintenance creation date
+          example: "2025-12-12"
+        note:
+          type: string
+          description: Maintenance note
+          example: Everything is ok
+    SimpleRentalEntity:
+      type: object
+      description: Schema for rental record
+      required:
+        - id
+        - rentalDate
+        - open
+      properties:
+        id:
+          type: integer
+          description: rental id
+          example: 52
+        rentalDate:
+          type: string
+          format: date
+          description: date of rental
+          example: "2025-12-12"
+        open:
+          type: boolean
+          example: true
+    BuyerEntity:
+      description: Buyer schema entity
+      required:
+        - name
+        - surname
+        - phone
+        - pesel
+      properties:
+        name:
+          type: string
+          example: Dawid
+        surname:
+          type: string
+          example: Nowak
+        phone:
+          type: string
+          format: phone
+          example: 111222333
+        pesel:
+          type: string
+          format: pesel
+    FullRentalEntity:
+      description: Full rental record schema
+      properties:
+        id:
+          type: integer
+          description: rental id
+          example: 15
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemEntity'
+          description: items rented in this rental
+        rentalDate:
+          type: string
+          description: date of rental
+          example: "2025-12-12"
+        price:
+          $ref: '#/components/schemas/Price'
+        paidPrice:
+          $ref: '#/components/schemas/Price'
+        open:
+          type: boolean
+          description: is rental still active
+        buyer:
+          $ref: '#/components/schemas/BuyerEntity'
+    CheckItemEntity:
+      description: Schema for check item response
+      required:
+        - itins
+        - validUntil
+        - key
+      properties:
+        itins:
+          type: array
+          description: Validated item ids
+          items:
+            type: integer
+          example: [0,5,4,3]
+        validUntil:
+          type: string
+          format: date
+          description: TTL
+          example: "2025-12-12:14:05"
+        key:
+          type: string
+          description: Key to cache
+          example: uu39s-431s-a4sd1
+    MaintenanceOnRentalEndEntity:
+      description: Send on rental end
+      required:
+        - id
+        - type
+        - note
+      properties:
+        id:
+          type: integer
+          description: item id
+          example: 15
+        type:
+          $ref: '#/components/schemas/MaintenanceTypeEnum'
+        note:
+          type: string
+          example: Damaged
+
+    Response_Error:
+      description: Schema for error response
+      required:
+        - timestamp
+        - errors
+      properties:
+        timestamp:
+          type: string
+          format: date
+          example: "2025-12-12"
+        errors:
+          $ref: '#/components/schemas/Errors'
+    Response_GetId:
+      description: Schema for returning only id
+      type: object
+      required:
+        - timestamp
+        - id
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        id:
+          type: string
+          description: Changed id
+          example: 21
+    Response_GetMultipleItems:
+      description: Schema for getting multiple items
+      type: object
+      required:
+        - timestamp
+        - items
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemEntity'
+    Response_GetSingleItem:
+      description: Schema for getting single item
+      type: object
+      required:
+        - timestamp
+        - item
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        item:
+          $ref: '#/components/schemas/ItemEntity'
+    Response_GetSingleMaintenance:
+      description: Schema for getting single Maintenance record
+      required:
+        - timestamp
+        - maintenance
+      type: object
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        maintenance:
+          $ref: '#/components/schemas/MaintenanceEntity'
+    Response_GetMultipleMaintenances:
+      description: Schema for getting multiple Maintenance records
+      required:
+        - timestamp
+        - maintenance
+      type: object
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        maintenance:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaintenanceEntity'
+    Response_ItemCheck:
+      description: Schema for item check response
+      required:
+        - timestamp
+        - checkItem
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        checkItem:
+          $ref: '#/components/schemas/CheckItemEntity'
+    Response_GetSimpleRentalsForItem:
+      description: Schema for getting multiple simple rental record for item
+      required:
+        - timestamp
+        - rentals
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        rentals:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleRentalEntity'
+    Response_CreateRental:
+      description: Schema for response on rental create
+      required:
+      - timestamp
+      - rental
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        rental:
+          $ref: '#/components/schemas/FullRentalEntity'
+    Response_GetSingleRental:
+      required:
+        - timestamp
+        - rental
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        rental:
+          $ref: '#/components/schemas/FullRentalEntity'
