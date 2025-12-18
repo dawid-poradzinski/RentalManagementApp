@@ -1,0 +1,35 @@
+package com.dawid.poradzinski.school.ski_rent_app.sql;
+
+import java.time.LocalDate;
+
+import org.openapitools.model.MaintenanceTypeEnum;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+public class Maintenance {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private MaintenanceTypeEnum maintenanceTypeEnum;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item item;
+
+    private LocalDate date;
+
+    private String note;
+}
