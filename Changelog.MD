@@ -1,4 +1,7 @@
-# CURRENT VERSION: 0.0.2
+# CURRENT VERSION: 0.0.3
+
+### [0.0.3]
+`Added groovy for unit tests.`
 
 ### [0.0.2]
 `Updated database diagram. Added ModelsGenerator for schema generation. Created basic backend project. Created docker-compose.`
