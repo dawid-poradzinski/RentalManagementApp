@@ -9,6 +9,8 @@ tags:
     description: Operations related to maintenances
   - name: Rentals
     description: Operations related to rentals
+servers:
+  - url: http://localhost:8080
 paths:
   /items:
     post:
@@ -539,9 +541,9 @@ components:
     ItemStatusTypeEnum:
       description: Item rental status
       enum:
-      - RENTED
-      - PENDING
       - AVAILABLE
+      - PENDING
+      - RENTED
       example: AVAILABLE
     MaintenanceTypeEnum:
       description: Maintenance type enum
@@ -565,6 +567,22 @@ components:
           description: Price currency
           pattern: '^[A-Z]{3}$'
           example: PLN
+    Pages:
+      description: Schema for page
+      type: object
+      properties:
+        currentPage:
+          description: Current page
+          type: integer
+          example: 5
+        currentSize:
+          description: CurrentSize
+          type: integer
+          example: 4
+        maxPage:
+          description: Last page with info for current size
+          type: integer
+          example: 2
     Request_AddItem:
       description: Schema for adding new item
       type: object
@@ -625,6 +643,7 @@ components:
           description: Item ids
           items:
             type: integer
+            format: int64
         key:
           type: string
           description: Key to cache
@@ -644,6 +663,7 @@ components:
           type: array
           items:
             type: integer
+            format: int64
           example: [1,5,3,2]
         buyer:
           $ref: '#/components/schemas/BuyerEntity'
@@ -686,6 +706,7 @@ components:
         id:
           description: Item id
           type: integer
+          format: int64
           example: 21
         name:
           description: Item name
@@ -730,10 +751,12 @@ components:
       properties:
         id:
           type: integer
+          format: int64
           description: Maintenance id
           example: 15
         itemId:
           type: integer
+          format: int64
           description: Item id
           example: 21
         type:
@@ -756,6 +779,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
           description: rental id
           example: 52
         rentalDate:
@@ -792,6 +816,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
           description: rental id
           example: 15
         items:
@@ -824,6 +849,7 @@ components:
           description: Validated item ids
           items:
             type: integer
+            format: int64
           example: [0,5,4,3]
         validUntil:
           type: string
@@ -843,6 +869,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
           description: item id
           example: 15
         type:
@@ -873,7 +900,8 @@ components:
         timestamp:
           $ref: '#/components/schemas/CurrentDate'
         id:
-          type: string
+          type: integer
+          format: int64
           description: Changed id
           example: 21
     Response_GetMultipleItems:
@@ -882,6 +910,7 @@ components:
       required:
         - timestamp
         - items
+        - pages
       properties:
         timestamp:
           $ref: '#/components/schemas/CurrentDate'
@@ -889,6 +918,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ItemEntity'
+        pages:
+          $ref: '#/components/schemas/Pages'
     Response_GetSingleItem:
       description: Schema for getting single item
       type: object
