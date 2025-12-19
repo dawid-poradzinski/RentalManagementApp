@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.openapitools.model.ItemStatusTypeEnum;
 
 import jakarta.persistence.Entity;
@@ -16,12 +17,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
 
     @Id
@@ -34,6 +39,7 @@ public class Item {
     @JoinColumn(name = "category_id")
     private ItemCategory category;
 
+    @CreationTimestamp
     private LocalDate addDate;
 
     private LocalDate lastMaintenance;
@@ -49,9 +55,9 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemStatusTypeEnum status;
     
-    private Boolean damaged;
+    private Boolean damaged = false;
 
     private BigDecimal priceAmount;
 
-    private String priceCurrency;
+    private String priceCurrency = "PLN";
 }
