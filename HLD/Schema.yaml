@@ -175,6 +175,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -204,6 +205,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - in: query
           name: page
           schema:
@@ -763,8 +765,9 @@ components:
           $ref: '#/components/schemas/MaintenanceTypeEnum'
         date:
           type: string
+          format: date
           description: Maintenance creation date
-          example: "2025-12-12"
+          example: 2025-12-12
         note:
           type: string
           description: Maintenance note
@@ -947,6 +950,7 @@ components:
       required:
         - timestamp
         - maintenance
+        - pages
       type: object
       properties:
         timestamp:
@@ -955,6 +959,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MaintenanceEntity'
+        pages:
+          $ref: '#/components/schemas/Pages'
     Response_ItemCheck:
       description: Schema for item check response
       required:

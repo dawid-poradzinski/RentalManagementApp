@@ -43,7 +43,7 @@ public class ItemMapper {
         return itemEntity;
     }
 
-    public List<ItemEntity> mapItemsToListItemEntityh(List<Item> items) {
+    public List<ItemEntity> mapItemsToListItemEntity(List<Item> items) {
         return items.stream().map(this::mapItemToItemEntity).toList();
     }
 

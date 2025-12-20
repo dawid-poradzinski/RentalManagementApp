@@ -7,11 +7,8 @@ import org.openapitools.model.RequestAddItem;
 import org.openapitools.model.ResponseGetId;
 import org.openapitools.model.ResponseGetMultipleItems;
 import org.openapitools.model.ResponseGetSingleItem;
-import org.springdoc.core.converters.models.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
@@ -63,7 +60,7 @@ public class ItemService {
 
         Page<Item> items = itemRepository.findAll(ItemSpecification.filter(getItemsParams), page);
 
-        return new ResponseGetMultipleItems(LocalDate.now(), itemMapper.mapItemsToListItemEntityh(items.toList()), itemMapper.mapItemsToPages(items, getItemsParams));
+        return new ResponseGetMultipleItems(LocalDate.now(), itemMapper.mapItemsToListItemEntity(items.toList()), itemMapper.mapItemsToPages(items, getItemsParams));
         
     }
 

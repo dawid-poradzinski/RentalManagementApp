@@ -53,7 +53,7 @@ public class Item {
     private List<RentalItem> rentals;
 
     @Enumerated(EnumType.STRING)
-    private ItemStatusTypeEnum status;
+    private ItemStatusTypeEnum status = ItemStatusTypeEnum.AVAILABLE;
     
     private Boolean damaged = false;
 
