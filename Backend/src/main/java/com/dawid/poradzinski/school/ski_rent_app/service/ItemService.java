@@ -12,11 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
-import com.dawid.poradzinski.school.ski_rent_app.specifications.ItemSpecification;
-import com.dawid.poradzinski.school.ski_rent_app.exceptions.exceptions.NotFoundException;
-import com.dawid.poradzinski.school.ski_rent_app.mapper.ItemCategoryMapper;
-import com.dawid.poradzinski.school.ski_rent_app.mapper.ItemMapper;
-import com.dawid.poradzinski.school.ski_rent_app.params.GetItemsParams;
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.exceptions.NotFoundException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemCategoryMapper;
+import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemMapper;
+import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
+import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.ItemSpecification;
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemCategoryRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.ItemCategory;

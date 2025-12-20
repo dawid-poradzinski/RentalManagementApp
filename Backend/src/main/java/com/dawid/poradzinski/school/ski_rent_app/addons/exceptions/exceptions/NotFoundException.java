@@ -1,4 +1,4 @@
-package com.dawid.poradzinski.school.ski_rent_app.exceptions.exceptions;
+package com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.exceptions;
 
 public class NotFoundException extends Exception {
     

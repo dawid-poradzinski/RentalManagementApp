@@ -1,4 +1,4 @@
-package com.dawid.poradzinski.school.ski_rent_app.params;
+package com.dawid.poradzinski.school.ski_rent_app.addons.params;
 
 import java.util.List;
 

@@ -10,12 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.dawid.poradzinski.school.ski_rent_app.exceptions.exceptions.NotFoundException;
-import com.dawid.poradzinski.school.ski_rent_app.mapper.MaintenanceMapper;
-import com.dawid.poradzinski.school.ski_rent_app.params.GetMaintenancesParams;
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.exceptions.NotFoundException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.MaintenanceMapper;
+import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetMaintenancesParams;
+import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.MaintenanceSpecification;
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
 import com.dawid.poradzinski.school.ski_rent_app.repository.MaintenanceRepository;
-import com.dawid.poradzinski.school.ski_rent_app.specifications.MaintenanceSpecification;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Maintenance;
 
