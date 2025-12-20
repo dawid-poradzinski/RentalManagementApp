@@ -2,6 +2,7 @@ package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -31,7 +32,7 @@ public class Rental {
     @OneToMany(mappedBy = "rental", fetch = FetchType.LAZY)
     private List<RentalItem> items;
 
-    private LocalDate rental_date;
+    private OffsetDateTime rental_date;
 
     private BigDecimal price;
 

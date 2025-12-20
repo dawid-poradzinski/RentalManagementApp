@@ -15,5 +15,5 @@ public class PaginationParams {
     private int page = 0;
     @Min(1)
     @Max(100)
-    private int size = 1;
+    private int size = 10;
 }

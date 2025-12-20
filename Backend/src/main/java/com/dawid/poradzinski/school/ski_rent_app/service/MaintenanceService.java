@@ -1,6 +1,7 @@
 package com.dawid.poradzinski.school.ski_rent_app.service;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import org.openapitools.model.MaintenanceTypeEnum;
 import org.openapitools.model.RequestAddMaintenance;
@@ -10,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.exceptions.NotFoundException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.MaintenanceMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetMaintenancesParams;
 import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.MaintenanceSpecification;
@@ -49,7 +50,7 @@ public class MaintenanceService {
             itemRepository.save(item);
         }
 
-        return new ResponseGetSingleMaintenance(LocalDate.now(), maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance), itemId));
+        return new ResponseGetSingleMaintenance(OffsetDateTime.now(), maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance), itemId));
 
     }
 
@@ -58,7 +59,7 @@ public class MaintenanceService {
 
         Page<Maintenance> maintenances = maintenanceRepository.findAll(MaintenanceSpecification.filter(params, itemId), page);
 
-        return new ResponseGetMultipleMaintenances(LocalDate.now(), maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()), maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
+        return new ResponseGetMultipleMaintenances(OffsetDateTime.now(), maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()), maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
     }
 
     public ResponseGetMultipleMaintenances getMaintenances(GetMaintenancesParams params) {
@@ -66,12 +67,12 @@ public class MaintenanceService {
 
         Page<Maintenance> maintenances = maintenanceRepository.findAll(MaintenanceSpecification.filter(params, null), page);
 
-        return new ResponseGetMultipleMaintenances(LocalDate.now(), maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()), maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
+        return new ResponseGetMultipleMaintenances(OffsetDateTime.now(), maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()), maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
     }
 
     public ResponseGetSingleMaintenance getMaintenance(Long id) {
         Maintenance maintenance = maintenanceRepository.findById(id).get();
 
-        return new ResponseGetSingleMaintenance(LocalDate.now(), maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenance));
+        return new ResponseGetSingleMaintenance(OffsetDateTime.now(), maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenance));
     }
 }
