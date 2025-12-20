@@ -1,11 +1,11 @@
-package com.dawid.poradzinski.school.ski_rent_app.specifications;
+package com.dawid.poradzinski.school.ski_rent_app.addons.specifications;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.dawid.poradzinski.school.ski_rent_app.params.GetItemsParams;
+import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.ItemCategory;
 

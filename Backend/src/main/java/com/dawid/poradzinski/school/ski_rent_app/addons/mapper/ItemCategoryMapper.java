@@ -1,4 +1,4 @@
-package com.dawid.poradzinski.school.ski_rent_app.mapper;
+package com.dawid.poradzinski.school.ski_rent_app.addons.mapper;
 
 import org.springframework.stereotype.Service;
 

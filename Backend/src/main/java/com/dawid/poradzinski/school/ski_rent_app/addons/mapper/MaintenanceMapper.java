@@ -1,4 +1,4 @@
-package com.dawid.poradzinski.school.ski_rent_app.mapper;
+package com.dawid.poradzinski.school.ski_rent_app.addons.mapper;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.openapitools.model.RequestAddMaintenance;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.dawid.poradzinski.school.ski_rent_app.params.GetMaintenancesParams;
+import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetMaintenancesParams;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Maintenance;
 
 @Service
