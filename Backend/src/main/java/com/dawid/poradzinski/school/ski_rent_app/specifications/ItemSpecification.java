@@ -18,7 +18,7 @@ public class ItemSpecification {
         return (root, query, cb) -> {
             
             List<Predicate> predicates = new ArrayList<>();
-            
+                
             if(params.getCategory() != null && !params.getCategory().isEmpty()) {
                 Join<Item, ItemCategory> categoryJoin = root.join("category");
                 predicates.add(categoryJoin.get("category").in(params.getCategory()));

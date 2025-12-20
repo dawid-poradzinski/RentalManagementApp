@@ -2,6 +2,7 @@ package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.openapitools.model.MaintenanceTypeEnum;
 
 import jakarta.persistence.Entity;
@@ -33,6 +34,7 @@ public class Maintenance {
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
+    @CreationTimestamp
     private LocalDate date;
 
     private String note;
