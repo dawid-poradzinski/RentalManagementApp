@@ -2,7 +2,7 @@ package com.dawid.poradzinski.school.ski_rent_app.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.exceptions.NotFoundException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetMaintenancesParams;
 import com.dawid.poradzinski.school.ski_rent_app.service.MaintenanceService;
 

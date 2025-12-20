@@ -2,6 +2,7 @@ package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,11 +41,11 @@ public class Item {
     private ItemCategory category;
 
     @CreationTimestamp
-    private LocalDate addDate;
+    private OffsetDateTime addDate;
 
-    private LocalDate lastMaintenance;
+    private OffsetDateTime lastMaintenance;
 
-    private LocalDate lastRental;
+    private OffsetDateTime lastRental;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Maintenance> maintenances;

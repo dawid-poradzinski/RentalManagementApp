@@ -1,6 +1,7 @@
 package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.openapitools.model.MaintenanceTypeEnum;
@@ -35,7 +36,7 @@ public class Maintenance {
     private Item item;
 
     @CreationTimestamp
-    private LocalDate date;
+    private OffsetDateTime date;
 
     private String note;
 }

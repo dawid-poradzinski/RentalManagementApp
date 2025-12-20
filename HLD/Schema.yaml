@@ -518,7 +518,7 @@ components:
     CurrentDate:
       description: Current date
       type: string
-      format: date
+      format: date-time
     Error:
       description: Returned error
       type: object
@@ -648,6 +648,7 @@ components:
             format: int64
         key:
           type: string
+          format: uuid
           description: Key to cache
           default: null
     Request_CreateRental:
@@ -660,7 +661,8 @@ components:
       properties:
         key:
           type: string
-          example: 421a-4asd-341a
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
         itins:
           type: array
           items:
@@ -720,19 +722,13 @@ components:
           example: Ski
         addDate:
           description: Item add date
-          type: string
-          format: date
-          example: 2025-12-12
+          $ref: '#/components/schemas/CurrentDate'
         lastMaintenance:
           description: Item last maintenance date
-          type: string
-          format: date
-          example: 2025-12-12
+          $ref: '#/components/schemas/CurrentDate'
         lastRental:
           description: Item last rental date
-          type: string
-          format: date
-          example: 2025-12-12
+          $ref: '#/components/schemas/CurrentDate'
         status:
           $ref: '#/components/schemas/ItemStatusTypeEnum'
         damaged:
@@ -764,10 +760,8 @@ components:
         type:
           $ref: '#/components/schemas/MaintenanceTypeEnum'
         date:
-          type: string
-          format: date
           description: Maintenance creation date
-          example: 2025-12-12
+          $ref: '#/components/schemas/CurrentDate'
         note:
           type: string
           description: Maintenance note
@@ -786,10 +780,8 @@ components:
           description: rental id
           example: 52
         rentalDate:
-          type: string
-          format: date
           description: date of rental
-          example: "2025-12-12"
+          $ref: '#/components/schemas/CurrentDate'
         open:
           type: boolean
           example: true
@@ -828,9 +820,8 @@ components:
             $ref: '#/components/schemas/ItemEntity'
           description: items rented in this rental
         rentalDate:
-          type: string
           description: date of rental
-          example: "2025-12-12"
+          $ref: '#/components/schemas/CurrentDate'
         price:
           $ref: '#/components/schemas/Price'
         paidPrice:
@@ -846,23 +837,34 @@ components:
         - itins
         - validUntil
         - key
+        - validatedItins
+        - allItins
+        - price
       properties:
-        itins:
+        validatedItins:
           type: array
           description: Validated item ids
           items:
             type: integer
             format: int64
           example: [0,5,4,3]
+        allItins:
+          type: array
+          description: All cached ids
+          items:
+            type: integer
+            format: int64
+          example: [0,5,4,3]
         validUntil:
-          type: string
-          format: date
           description: TTL
-          example: "2025-12-12:14:05"
+          $ref: '#/components/schemas/CurrentDate'
+        price:
+          $ref: '#/components/schemas/Price'
         key:
           type: string
+          format: uuid
           description: Key to cache
-          example: uu39s-431s-a4sd1
+          example: 123e4567-e89b-12d3-a456-426614174000
     MaintenanceOnRentalEndEntity:
       description: Send on rental end
       required:
@@ -888,9 +890,7 @@ components:
         - errors
       properties:
         timestamp:
-          type: string
-          format: date
-          example: "2025-12-12"
+          $ref: '#/components/schemas/CurrentDate'
         errors:
           $ref: '#/components/schemas/Errors'
     Response_GetId:

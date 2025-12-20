@@ -1,6 +1,9 @@
 package com.dawid.poradzinski.school.ski_rent_app.addons.caches;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.cache2k.Cache;
@@ -25,11 +28,11 @@ public class CacheConfig {
     }
 
     @Bean
-    public Cache<String, List<Long>> rentalPendingItems() {
-        return new Cache2kBuilder<String, List<Long>>() {}
+    public Cache<UUID, HashSet<Long>> rentalPendingItems() {
+        return new Cache2kBuilder<UUID, HashSet<Long>>() {}
             .expireAfterWrite(5, TimeUnit.MINUTES)
-            .addAsyncListener((CacheEntryExpiredListener<String, List<Long>>) (cache, entry) -> {
-                List<Long> ids = entry.getValue();
+            .addAsyncListener((CacheEntryExpiredListener<UUID, HashSet<Long>>) (cache, entry) -> {
+                HashSet<Long> ids = entry.getValue();
                 List<Item> items = itemRepository.findAllById(ids);
                 items.forEach(item -> item.setStatus(ItemStatusTypeEnum.AVAILABLE));
                 itemRepository.saveAll(items);

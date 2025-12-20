@@ -1,6 +1,7 @@
 package com.dawid.poradzinski.school.ski_rent_app.service;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import org.openapitools.model.RequestAddItem;
@@ -12,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
-import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.exceptions.NotFoundException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemCategoryMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
@@ -51,7 +52,7 @@ public class ItemService {
 
         Item newItem = itemRepository.save(itemMapper.mapRequestAddItemToitem(requestItem, categoryInDb));
 
-        return new ResponseGetId(LocalDate.now(), newItem.getId());
+        return new ResponseGetId(OffsetDateTime.now(), newItem.getId());
     }
 
     public ResponseGetMultipleItems getItems(GetItemsParams getItemsParams) {
@@ -60,7 +61,7 @@ public class ItemService {
 
         Page<Item> items = itemRepository.findAll(ItemSpecification.filter(getItemsParams), page);
 
-        return new ResponseGetMultipleItems(LocalDate.now(), itemMapper.mapItemsToListItemEntity(items.toList()), itemMapper.mapItemsToPages(items, getItemsParams));
+        return new ResponseGetMultipleItems(OffsetDateTime.now(), itemMapper.mapItemsToListItemEntity(items.toList()), itemMapper.mapItemsToPages(items, getItemsParams));
         
     }
 
@@ -68,7 +69,7 @@ public class ItemService {
         
         Optional<Item> item = itemRepository.findById(id);
 
-        return new ResponseGetSingleItem(LocalDate.now(), itemMapper.mapItemToItemEntity(item.get()));
+        return new ResponseGetSingleItem(OffsetDateTime.now(), itemMapper.mapItemToItemEntity(item.get()));
 
     }
 
@@ -77,6 +78,6 @@ public class ItemService {
 
         itemRepository.delete(item);
 
-        return new ResponseGetId(LocalDate.now(), id);
+        return new ResponseGetId(OffsetDateTime.now(), id);
     }
 }
