@@ -36,6 +36,8 @@ public class RentalItem {
 
     @Embeddable
     @EqualsAndHashCode
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class RentalItemId implements Serializable {
 
         private Long rentalId;

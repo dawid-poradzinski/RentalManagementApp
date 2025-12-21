@@ -1,16 +1,19 @@
 package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -32,6 +35,7 @@ public class Rental {
     @OneToMany(mappedBy = "rental", fetch = FetchType.LAZY)
     private List<RentalItem> items;
 
+    @CreationTimestamp
     private OffsetDateTime rental_date;
 
     private BigDecimal price;
@@ -42,10 +46,11 @@ public class Rental {
 
     private String paidCurrency;
 
-    private Boolean open;
+    private Boolean open = true;
 
     @OneToOne
     @JoinColumn(name = "buyer_id")
+    @ManyToOne(cascade = CascadeType.ALL)
     private BuyerEntity buyer;
     
 }

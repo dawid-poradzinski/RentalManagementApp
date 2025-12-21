@@ -834,12 +834,9 @@ components:
     CheckItemEntity:
       description: Schema for check item response
       required:
-        - itins
-        - validUntil
         - key
         - validatedItins
         - allItins
-        - price
       properties:
         validatedItins:
           type: array
