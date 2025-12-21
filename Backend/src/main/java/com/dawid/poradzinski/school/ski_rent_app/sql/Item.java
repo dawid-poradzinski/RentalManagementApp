@@ -1,7 +1,6 @@
 package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 

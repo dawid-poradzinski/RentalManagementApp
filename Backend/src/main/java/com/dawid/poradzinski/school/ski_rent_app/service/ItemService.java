@@ -1,6 +1,5 @@
 package com.dawid.poradzinski.school.ski_rent_app.service;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
