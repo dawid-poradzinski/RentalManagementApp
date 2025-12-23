@@ -51,7 +51,7 @@ public class ItemService {
 
         Item newItem = itemRepository.save(itemMapper.mapRequestAddItemToitem(requestItem, categoryInDb));
 
-        return new ResponseGetId(OffsetDateTime.now(), newItem.getId());
+        return new ResponseGetId().id(newItem.getId()).timestamp(OffsetDateTime.now());
     }
 
     public ResponseGetMultipleItems getItems(GetItemsParams getItemsParams) {
@@ -60,23 +60,36 @@ public class ItemService {
 
         Page<Item> items = itemRepository.findAll(ItemSpecification.filter(getItemsParams), page);
 
-        return new ResponseGetMultipleItems(OffsetDateTime.now(), itemMapper.mapItemsToListItemEntity(items.toList()), itemMapper.mapItemsToPages(items, getItemsParams));
-        
+        return new ResponseGetMultipleItems()
+                .timestamp(OffsetDateTime.now())
+                .items(itemMapper.mapItemsToListItemEntity(items.toList()))
+                .pages(itemMapper.mapItemsToPages(items, getItemsParams)); 
     }
 
-    public ResponseGetSingleItem getItem(Long id) throws NotFoundException {
+    public ResponseGetSingleItem getItem(Long id) {
         
         Optional<Item> item = itemRepository.findById(id);
 
-        return new ResponseGetSingleItem(OffsetDateTime.now(), itemMapper.mapItemToItemEntity(item.get()));
+        if(item.isEmpty()) {
+            throw new NotFoundException("Id in request is invalid:" + id );
+        }
 
+        return new ResponseGetSingleItem()
+                .timestamp(OffsetDateTime.now())
+                .item(itemMapper.mapItemToItemEntity(item.get()));
     }
 
-    public ResponseGetId deleteItem(Long id) throws NotFoundException {
-        Item item = itemRepository.findById(id).get();
+    public ResponseGetId deleteItem(Long id) {
+        Optional<Item> item = itemRepository.findById(id);
 
-        itemRepository.delete(item);
+        if(item.isEmpty()) {
+            throw new NotFoundException("Id in request is invalid:" + id );
+        }
 
-        return new ResponseGetId(OffsetDateTime.now(), id);
+        itemRepository.delete(item.get());
+
+        return new ResponseGetId()
+                .timestamp(OffsetDateTime.now())
+                .id(id);
     }
 }

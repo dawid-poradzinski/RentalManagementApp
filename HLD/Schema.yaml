@@ -522,19 +522,31 @@ components:
     Error:
       description: Returned error
       type: object
+      required:
+        - category
+        - type
+        - fieldValue
       properties:
         category:
           description: Error category
           type: string
           example: Input Error
-        type:
+        message:
           description: Error type
           type: string
           example: Empty Field
-        message:
-          description: Error message
+        fieldPath:
+          description: Error path
           type: string
-          example: Missing field array[0].exampleField
+          example: buyer
+        fieldName:
+          description: Error name
+          type: string
+          example: phone
+        fieldValue:
+          description: Error value
+          type: string
+          example: []
     Errors:
       description: Returned errors
       type: array
@@ -641,11 +653,13 @@ components:
         - itins
       properties:
         itins:
+          nullable: false
           type: array
           description: Item ids
           items:
             type: integer
             format: int64
+          minItems: 1
         key:
           type: string
           format: uuid
@@ -660,15 +674,18 @@ components:
         - paid
       properties:
         key:
+          nullable: false
           type: string
           format: uuid
           example: 123e4567-e89b-12d3-a456-426614174000
         itins:
+          nullable: false
           type: array
           items:
             type: integer
             format: int64
           example: [1,5,3,2]
+          minItems: 1
         buyer:
           $ref: '#/components/schemas/BuyerEntity'
         paid:

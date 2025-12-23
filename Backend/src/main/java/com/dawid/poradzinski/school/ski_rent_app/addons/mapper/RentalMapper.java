@@ -28,8 +28,8 @@ public class RentalMapper {
         entity.setId(rental.getId());
         entity.setItems(itemMapper.mapItemsToListItemEntity(mapRentalItemToItem(rental.getItems())));
         entity.setOpen(rental.getOpen());
-        entity.setPrice(new Price(rental.getPrice(), rental.getPriceCurrency()));
-        entity.setPaidPrice(new Price(rental.getPaidPrice(), rental.getPaidCurrency()));
+        entity.setPrice(new Price().priceAmount(rental.getPrice()).priceCurrency(rental.getPriceCurrency()));
+        entity.setPaidPrice(new Price().priceAmount(rental.getPaidPrice()).priceCurrency(rental.getPaidCurrency()));
         entity.setRentalDate(rental.getRental_date());
         return entity;
     }
