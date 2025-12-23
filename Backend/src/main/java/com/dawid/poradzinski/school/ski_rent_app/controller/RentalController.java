@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.KeyNotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.service.RentalService;
 
+import jakarta.validation.Valid;
+
 import org.openapitools.model.RequestCreateRental;
 import org.openapitools.model.RequestItemCheck;
 import org.openapitools.model.ResponseCreateRental;
@@ -24,13 +26,13 @@ public class RentalController {
     }
     
     @PostMapping("itemCheck")
-    public ResponseEntity<ResponseItemCheck> ItemCheck(@RequestBody RequestItemCheck request) throws KeyNotFoundException, Exception {
+    public ResponseEntity<ResponseItemCheck> ItemCheck(@Valid @RequestBody RequestItemCheck request) throws KeyNotFoundException, Exception {
         return ResponseEntity.ok(rentalService.itemCheck(request));
     }
     
 
     @PostMapping("rentals")
-    public ResponseEntity<ResponseCreateRental> createRental(@RequestBody RequestCreateRental request) throws Exception{
+    public ResponseEntity<ResponseCreateRental> createRental(@Valid @RequestBody RequestCreateRental request) throws Exception{
         return ResponseEntity.ok(rentalService.createRental(request));
     }
     

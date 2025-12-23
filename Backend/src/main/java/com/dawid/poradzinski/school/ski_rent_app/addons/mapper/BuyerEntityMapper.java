@@ -12,6 +12,6 @@ public class BuyerEntityMapper {
     }
     
     public org.openapitools.model.BuyerEntity mapSqlToEntity(BuyerEntity entity) {
-        return new org.openapitools.model.BuyerEntity(entity.getName(), entity.getSurname(), entity.getPhone(), entity.getPesel());
+        return new org.openapitools.model.BuyerEntity().name(entity.getName()).surname(entity.getSurname()).phone(entity.getPhone()).pesel(entity.getPesel());
     }
 }

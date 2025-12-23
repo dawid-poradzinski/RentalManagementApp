@@ -11,7 +11,7 @@ import org.openapitools.model.ResponseCreateRental;
 import org.openapitools.model.ResponseItemCheck;
 import org.springframework.stereotype.Service;
 
-import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.KeyNotFoundException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.EmptyCardException;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.BuyerEntityMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.RentalMapper;
 import com.dawid.poradzinski.school.ski_rent_app.repository.RentalItemRepository;
@@ -42,14 +42,19 @@ public class RentalService {
         this.rentalMapper = rentalMapper;
     }
 
-    public ResponseItemCheck itemCheck(RequestItemCheck request) throws KeyNotFoundException, Exception {
-        return new ResponseItemCheck(OffsetDateTime.now(), itemCheckService.itemCheck(request));
+    public ResponseItemCheck itemCheck(RequestItemCheck request) throws Exception {
+        if(request.getItins().isEmpty()) {
+            throw new EmptyCardException("Send list of itins to check is empty: itins: []");
+        }
+        return new ResponseItemCheck()
+                .timestamp(OffsetDateTime.now())
+                .checkItem(itemCheckService.itemCheck(request));
     }
 
     public ResponseCreateRental createRental(RequestCreateRental request) throws Exception {
-        if (request.getItins().isEmpty()) {
-            throw new Exception("no itins on rental");
-        }
+        // if (request.getItins().isEmpty()) {
+        //     throw new EmptyCardException("List of itins to shop is empty: itins: []");
+        // }
         List<Item> items = itemCheckService.itemShop(request.getKey(), new HashSet<Long>(request.getItins()));
         Price price = itemCheckService.itemPrice(items);
 
@@ -71,7 +76,8 @@ public class RentalService {
         rentalItemRepository.saveAll(rentalItems);
         savedRental.setItems(rentalItems);
 
-        return new ResponseCreateRental(OffsetDateTime.now(), rentalMapper.mapRentalToFullRentalEntity(savedRental));
-    
+        return new ResponseCreateRental()
+                .timestamp(OffsetDateTime.now())
+                .rental(rentalMapper.mapRentalToFullRentalEntity(savedRental));
     }
 }

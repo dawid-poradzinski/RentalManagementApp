@@ -36,9 +36,13 @@
                             <generateApis>false</generateApis>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-
                             <addCompileSourceRoot>false</addCompileSourceRoot>
-
+                            <configOptions>
+                                <serializationLibrary>jackson</serializationLibrary>
+                                <performBeanValidation>true</performBeanValidation>
+                                <useBeanValidation>true</useBeanValidation>
+                                <useJakartaEe>true</useJakartaEe>
+                            </configOptions>
                         </configuration>
                     </execution>
 

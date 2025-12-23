@@ -15,6 +15,8 @@ import org.openapitools.model.ItemStatusTypeEnum;
 import org.openapitools.model.Price;
 import org.openapitools.model.RequestItemCheck;
 import org.springframework.stereotype.Service;
+
+import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.InvalidShopKey;
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.KeyNotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
@@ -34,7 +36,7 @@ public class ItemCheckService {
 
     public Price itemPrice(List<Item> items) throws Exception{
         if(items.isEmpty()) {
-            return new Price(BigDecimal.ZERO, "UNK");
+            throw new Exception("Empty list to price");
         }
         Map<String, BigDecimal> prices = items.stream()
         .collect(Collectors.groupingBy(
@@ -50,34 +52,13 @@ public class ItemCheckService {
         }
         BigDecimal total = prices.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return new Price(total, currency);
+        return new Price().priceAmount(total).priceCurrency(currency);
     }
     
-    public Price itemPrice(HashSet<Long> ids) throws Exception{
-        if(ids.isEmpty()) {
-            return new Price(BigDecimal.ZERO, "UNK");
-        }
-        Map<String, BigDecimal> prices = itemRepository.findAllById(ids).stream()
-        .collect(Collectors.groupingBy(
-                Item::getPriceCurrency,
-                Collectors.mapping(
-                        Item::getPriceAmount,
-                        Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
-                )
-        ));
-        String currency = prices.containsKey("PLN") ? "PLN" : prices.keySet().stream().findFirst().orElse(null);
-        if(currency == null) {
-            throw new Exception("no values");
-        }
-        BigDecimal total = prices.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return new Price(total, currency);
-    }
-
     public List<Item> itemShop(UUID key, HashSet<Long> shopItins) throws Exception{
         HashSet<Long> cachedIds = rentalPendingItems.get(key);
         if (cachedIds == null) {
-            throw new Exception("Invalid shop key");
+            throw new InvalidShopKey("Invalid shop key: " + key);
         }
         if (shopItins.stream().filter(id -> cachedIds.contains(id)).collect(Collectors.toSet()).size() != shopItins.size()) {
             throw new Exception("Cached itins don't match shoped itins");
@@ -96,18 +77,18 @@ public class ItemCheckService {
         return itemRepository.saveAll(items);
     } 
 
-    public CheckItemEntity itemCheck(RequestItemCheck request) throws KeyNotFoundException, Exception{
+    public CheckItemEntity itemCheck(RequestItemCheck request) throws Exception{
         
         UUID uuid = request.getKey();
         HashSet<Long> cacheIds;
 
         if (request.getKey() != null) {
             if (!rentalPendingItems.containsKey(uuid)) {
-                throw new KeyNotFoundException(uuid.toString());
+                throw new KeyNotFoundException("Shop key doesn't exist: " + uuid.toString());
             }  
             cacheIds = rentalPendingItems.get(uuid);
             if(cacheIds == null) {
-                throw new Exception("Shop key timeout");
+                throw new KeyNotFoundException("Shop key timeout: " + uuid.toString());
             }
         } else {
             cacheIds = new HashSet<>();
@@ -122,23 +103,26 @@ public class ItemCheckService {
             items = itemRepository.findAllById(idsToCheck);
         }
 
-        HashSet<Long> validIds = items.stream().filter(item -> item.getStatus() == ItemStatusTypeEnum.AVAILABLE).filter(item -> !item.getDamaged()).map(item -> item.getId()).collect(Collectors.toCollection(HashSet::new));
-
-        if (!validIds.isEmpty()) {
+        List<Item> validItems = items.stream().filter(item -> item.getStatus() == ItemStatusTypeEnum.AVAILABLE).filter(item -> !item.getDamaged()).toList();
+        List<Long> validIds = validItems.stream().map(item -> item.getId()).toList();
+        if (!validItems.isEmpty()) {
             if(request.getKey() == null) {
                 uuid = UUID.randomUUID();
             }
-            itemRepository.saveAll(items.stream().filter(item -> validIds.contains(item.getId())).peek(item -> item.setStatus(ItemStatusTypeEnum.PENDING)).toList());
+            itemRepository.saveAll(validItems.stream().peek(item -> item.setStatus(ItemStatusTypeEnum.PENDING)).toList());
             cacheIds.addAll(validIds);
             rentalPendingItems.put(uuid, cacheIds);
         }
 
         if (cacheIds.isEmpty()) {
-            return new CheckItemEntity(new ArrayList<>(), new ArrayList<>(), uuid);
+            return new CheckItemEntity().key(uuid);
         } else {
-            CheckItemEntity checkItemEntity = new CheckItemEntity(new ArrayList<>(validIds), new ArrayList<>(cacheIds), uuid);
-            checkItemEntity.setValidUntil(OffsetDateTime.now().plus(5, ChronoUnit.MINUTES));
-            checkItemEntity.setPrice(itemPrice((validIds)));
+            CheckItemEntity checkItemEntity = new CheckItemEntity()
+                .validatedItins(validIds)
+                .allItins(new ArrayList<>(cacheIds))
+                .key(uuid)
+                .validUntil(OffsetDateTime.now().plus(5, ChronoUnit.MINUTES))
+                .price(itemPrice(validItems));
             return checkItemEntity;
         }
 

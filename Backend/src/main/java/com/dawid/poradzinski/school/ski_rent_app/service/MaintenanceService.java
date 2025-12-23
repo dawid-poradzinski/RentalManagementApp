@@ -49,8 +49,9 @@ public class MaintenanceService {
             itemRepository.save(item);
         }
 
-        return new ResponseGetSingleMaintenance(OffsetDateTime.now(), maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance), itemId));
-
+        return new ResponseGetSingleMaintenance()
+                .timestamp(OffsetDateTime.now())
+                .maintenance(maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance), itemId));
     }
 
     public ResponseGetMultipleMaintenances getMaintenancesForItem(Long itemId, GetMaintenancesParams params) {
@@ -58,7 +59,10 @@ public class MaintenanceService {
 
         Page<Maintenance> maintenances = maintenanceRepository.findAll(MaintenanceSpecification.filter(params, itemId), page);
 
-        return new ResponseGetMultipleMaintenances(OffsetDateTime.now(), maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()), maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
+        return new ResponseGetMultipleMaintenances()
+                .timestamp(OffsetDateTime.now())
+                .maintenance(maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()))
+                .pages(maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
     }
 
     public ResponseGetMultipleMaintenances getMaintenances(GetMaintenancesParams params) {
@@ -66,12 +70,17 @@ public class MaintenanceService {
 
         Page<Maintenance> maintenances = maintenanceRepository.findAll(MaintenanceSpecification.filter(params, null), page);
 
-        return new ResponseGetMultipleMaintenances(OffsetDateTime.now(), maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()), maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
+        return new ResponseGetMultipleMaintenances()
+                .timestamp(OffsetDateTime.now())
+                .maintenance(maintenanceMapper.mapMaintenancesToListMaintenanceEntity(maintenances.toList()))
+                .pages(maintenanceMapper.mapMaintenancePageToPages(maintenances, params));
     }
 
     public ResponseGetSingleMaintenance getMaintenance(Long id) {
         Maintenance maintenance = maintenanceRepository.findById(id).get();
 
-        return new ResponseGetSingleMaintenance(OffsetDateTime.now(), maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenance));
+        return new ResponseGetSingleMaintenance()
+                .timestamp(OffsetDateTime.now())
+                .maintenance(maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenance));
     }
 }
