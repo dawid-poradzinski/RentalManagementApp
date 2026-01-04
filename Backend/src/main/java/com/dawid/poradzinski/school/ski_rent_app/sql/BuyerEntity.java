@@ -1,10 +1,13 @@
 package com.dawid.poradzinski.school.ski_rent_app.sql;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +32,6 @@ public class BuyerEntity {
 
     private String surname;
 
-    @OneToOne(mappedBy = "buyer")
-    private Rental rental;
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
+    private List<Rental> rentals;
 }

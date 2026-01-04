@@ -15,8 +15,10 @@ import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemCategoryMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemMapper;
+import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshParams;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
-import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.ItemSpecification;
+import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.Item.BasicItemSpecification;
+import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.Item.ItemRefreshSpecification;
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemCategoryRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.ItemCategory;
@@ -58,7 +60,7 @@ public class ItemService {
 
         var page = PageRequest.of(getItemsParams.getPage(), getItemsParams.getSize());
 
-        Page<Item> items = itemRepository.findAll(ItemSpecification.filter(getItemsParams), page);
+        Page<Item> items = itemRepository.findAll(BasicItemSpecification.filter(getItemsParams), page);
 
         return new ResponseGetMultipleItems()
                 .timestamp(OffsetDateTime.now())
@@ -91,5 +93,17 @@ public class ItemService {
         return new ResponseGetId()
                 .timestamp(OffsetDateTime.now())
                 .id(id);
+    }
+
+    public ResponseGetMultipleItems getItemRefresh(GetItemRefreshParams params) {
+        
+        var page = PageRequest.of(params.getPage(), params.getSize());
+
+        Page<Item> items = itemRepository.findAll(ItemRefreshSpecification.filter(params), page);
+
+        return new ResponseGetMultipleItems()
+                .timestamp(OffsetDateTime.now())
+                .items(itemMapper.mapItemsToListItemEntity(items.toList()))
+                .pages(itemMapper.mapItemsToPages(items, params)); 
     }
 }

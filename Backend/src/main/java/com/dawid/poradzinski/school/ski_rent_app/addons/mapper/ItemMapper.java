@@ -9,6 +9,7 @@ import org.openapitools.model.RequestAddItem;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshParams;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.ItemCategory;
@@ -35,11 +36,9 @@ public class ItemMapper {
         itemEntity.setDamaged(item.getDamaged());
         itemEntity.setId(item.getId());
         itemEntity.setLastMaintenance(item.getLastMaintenance());
-        itemEntity.setLastRental(item.getLastRental());
         itemEntity.setName(item.getName());
         itemEntity.setPrice(new Price().priceAmount(item.getPriceAmount()).priceCurrency(item.getPriceCurrency()));
-        itemEntity.setStatus(item.getStatus());
-
+        
         return itemEntity;
     }
 
@@ -52,7 +51,17 @@ public class ItemMapper {
 
         pages.setCurrentPage(getItemsParams.getPage());
         pages.setCurrentSize(getItemsParams.getSize());
-        pages.setMaxPage(page.getTotalPages());
+        pages.setMaxPage(page.getTotalPages() - 1);
+
+        return pages;
+    }
+
+    public Pages mapItemsToPages(Page<Item> page, GetItemRefreshParams getItemsParams) {
+        Pages pages = new Pages();
+
+        pages.setCurrentPage(getItemsParams.getPage());
+        pages.setCurrentSize(getItemsParams.getSize());
+        pages.setMaxPage(page.getTotalPages() - 1);
 
         return pages;
     }

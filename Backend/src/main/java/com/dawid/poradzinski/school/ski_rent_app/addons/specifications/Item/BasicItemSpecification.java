@@ -1,4 +1,4 @@
-package com.dawid.poradzinski.school.ski_rent_app.addons.specifications;
+package com.dawid.poradzinski.school.ski_rent_app.addons.specifications.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.dawid.poradzinski.school.ski_rent_app.sql.ItemCategory;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
-public class ItemSpecification {
+public class BasicItemSpecification {
     
     public static Specification<Item> filter(GetItemsParams params) {
         return (root, query, cb) -> {
@@ -26,10 +26,6 @@ public class ItemSpecification {
 
             if(params.getDamaged() != null) {
                 predicates.add(cb.equal(root.get("damaged"), params.getDamaged()));
-            }
-
-            if(params.getStatus() != null) {
-                predicates.add(cb.equal(root.get("status"), params.getStatus()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
