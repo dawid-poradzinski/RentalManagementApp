@@ -1,6 +1,7 @@
 package com.dawid.poradzinski.school.ski_rent_app.sql;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
@@ -33,6 +34,10 @@ public class RentalItem {
     @MapsId("itemId")
     @JoinColumn(name = "item_id")
     private Item item;
+
+    private BigDecimal price;
+
+    private String currency = "PLN";
 
     @Embeddable
     @EqualsAndHashCode

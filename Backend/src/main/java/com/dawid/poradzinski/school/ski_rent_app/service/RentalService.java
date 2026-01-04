@@ -1,83 +1,89 @@
 package com.dawid.poradzinski.school.ski_rent_app.service;
-
 import java.time.OffsetDateTime;
-import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
-import org.openapitools.model.Price;
-import org.openapitools.model.RequestCreateRental;
 import org.openapitools.model.RequestItemCheck;
-import org.openapitools.model.ResponseCreateRental;
+import org.openapitools.model.RequestItemShop;
+import org.openapitools.model.ResponseGetId;
 import org.openapitools.model.ResponseItemCheck;
 import org.springframework.stereotype.Service;
 
-import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.EmptyCardException;
+import com.dawid.poradzinski.school.ski_rent_app.addons.caches.CacheEntity;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.BuyerEntityMapper;
-import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.RentalMapper;
-import com.dawid.poradzinski.school.ski_rent_app.repository.RentalItemRepository;
+import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
 import com.dawid.poradzinski.school.ski_rent_app.repository.RentalRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Rental;
-import com.dawid.poradzinski.school.ski_rent_app.sql.RentalItem;
-import com.dawid.poradzinski.school.ski_rent_app.sql.RentalItem.RentalItemId;
 
 @Service
 public class RentalService {
     
-    private final RentalRepository rentalRepository;
     private final ItemCheckService itemCheckService;
+    private final RentalRepository rentalRepository;
     private final BuyerEntityMapper buyerEntityMapper;
-    private final RentalItemRepository rentalItemRepository;
-    private final RentalMapper rentalMapper;
+    private final ItemRepository itemRepository;
 
-    RentalService(RentalRepository rentalRepository,
-                ItemCheckService itemCheckService,
-                BuyerEntityMapper buyerEntityMapper,
-                RentalItemRepository rentalItemRepository,
-                RentalMapper rentalMapper) {
-        this.rentalRepository = rentalRepository;
+    RentalService(ItemCheckService itemCheckService, RentalRepository rentalRepository, BuyerEntityMapper buyerEntityMapper, ItemRepository itemRepository) {
         this.itemCheckService = itemCheckService;
+        this.rentalRepository = rentalRepository;
         this.buyerEntityMapper = buyerEntityMapper;
-        this.rentalItemRepository = rentalItemRepository;
-        this.rentalMapper = rentalMapper;
+        this.itemRepository = itemRepository;
     }
 
-    public ResponseItemCheck itemCheck(RequestItemCheck request) throws Exception {
-        if(request.getItins().isEmpty()) {
-            throw new EmptyCardException("Send list of itins to check is empty: itins: []");
+    private void validateDates(OffsetDateTime from, OffsetDateTime to) {
+        if (!to.isAfter(from)) {
+            throw new RuntimeException("Date range is invalid: from-to: " + from.toString() + " " + to.toString());
         }
-        return new ResponseItemCheck()
-                .timestamp(OffsetDateTime.now())
-                .checkItem(itemCheckService.itemCheck(request));
     }
 
-    public ResponseCreateRental createRental(RequestCreateRental request) throws Exception {
-        // if (request.getItins().isEmpty()) {
-        //     throw new EmptyCardException("List of itins to shop is empty: itins: []");
-        // }
-        List<Item> items = itemCheckService.itemShop(request.getKey(), new HashSet<Long>(request.getItins()));
-        Price price = itemCheckService.itemPrice(items);
+    public ResponseItemCheck itemCheck(RequestItemCheck request) {
+        
+        validateDates(request.getRental().getFrom(), request.getRental().getTo());
+
+        UUID token = request.getToken() == null ? UUID.randomUUID() : request.getToken();
+
+        CacheEntity currentCacheEntity = new CacheEntity(request.getRental().getFrom(), request.getRental().getTo(), token);
+
+        return itemCheckService.itemCheck(request.getItems(), currentCacheEntity).timestamp(OffsetDateTime.now()).token(token);
+    }
+
+    public ResponseGetId itemShop(RequestItemShop request) {
+
+        validateDates(request.getRental().getFrom(), request.getRental().getTo());
+        
+        // shop token validation
+
+        var existing = itemCheckService.checkCacheForIdsForSpecificToken(request.getItems(), request.getToken());
+
+        CacheEntity currentCacheEntity = new CacheEntity(request.getRental().getFrom(), request.getRental().getTo(), request.getToken());
+
+        existing.forEach((string, entity) -> {
+            if (!entity.equals(currentCacheEntity)) {
+                throw new RuntimeException(entity.toString() + ":" + currentCacheEntity.toString());
+            }
+        });
 
         Rental rental = new Rental();
-        rental.setBuyer(buyerEntityMapper.mapEntityToSql(request.getBuyer()));
-        rental.setPaidPrice(request.getPaid().getPriceAmount());
+
         rental.setPaidCurrency(request.getPaid().getPriceCurrency());
-        rental.setPrice(price.getPriceAmount());
-        rental.setPriceCurrency(price.getPriceCurrency());
+        rental.setPaidPrice(request.getPaid().getPriceAmount());
+        rental.setRentalStart(request.getRental().getFrom());
+        rental.setRentalEnd(request.getRental().getTo());
+        rental.setBuyer(buyerEntityMapper.mapEntityToSql(request.getBuyer()));
 
-        Rental savedRental = rentalRepository.save(rental);
+        List<Item> items = itemRepository.findAllById(request.getItems());
 
-        List<RentalItem> rentalItems = items.stream()
-            .map(item -> {
-                return new RentalItem(new RentalItemId(savedRental.getId(), item.getId()), savedRental, item);
-            })
-            .toList();
+        items.forEach(item -> {
+            rental.addItem(item);
+        });
+        
+        var responseRental = rentalRepository.save(rental);
 
-        rentalItemRepository.saveAll(rentalItems);
-        savedRental.setItems(rentalItems);
-
-        return new ResponseCreateRental()
-                .timestamp(OffsetDateTime.now())
-                .rental(rentalMapper.mapRentalToFullRentalEntity(savedRental));
+        return new ResponseGetId()
+            .timestamp(OffsetDateTime.now())
+            .id(responseRental.getId());
     }
+
+    
 }

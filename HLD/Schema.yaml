@@ -7,6 +7,8 @@ tags:
     description: Operations related to items
   - name: Maintenances
     description: Operations related to maintenances
+  - name: Availability
+    description: Operations related to item availability for rental
   - name: Rentals
     description: Operations related to rentals
 servers:
@@ -49,6 +51,18 @@ paths:
             minimum: 0
           required: false
         - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+          required: true
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+          required: true
+        - in: query
           name: size
           schema:
             type: integer
@@ -62,13 +76,6 @@ paths:
             type: array
             items:
               type: string
-          required: false
-        - in: query
-          name: status
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ItemStatusTypeEnum'
           required: false
         - in: query
           name: damaged
@@ -353,11 +360,64 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /itemCheck:
-    post:
-      summary: Check items status and put available to cache
+  /shop/itemRefresh:
+    get:
+      summary: Get items availabilable in specific time window via only DB
       tags:
-        - Rentals
+        - Availability
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - in: query
+          name: category
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: from
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Successfully retrieved item data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetMultipleItems'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Error'
+  /shop/itemCheck:
+    post:
+      tags:
+        - Availability
+      description: Check selected items in DB and cache. Generate shop token.
       requestBody:
         required: true
         content:
@@ -366,146 +426,34 @@ paths:
               $ref: '#/components/schemas/Request_ItemCheck'
       responses:
         '200':
-          description: Item check successfully run
+          description: Successfully retrieved data
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_ItemCheck'
-  /items/{id}/rentals:
-    get:
-      summary: Get multiple simple rental records paginated for specific item
-      tags:
-        - Rentals
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-          required: false
-        - in: query
-          name: size
-          schema:
-            type: integer
-            default: 1
-            minimum: 1
-            maximum: 100
-          required: false
-        - in: query
-          name: open
-          schema:
-            type: boolean
-          required: false
-      responses:
-        '200':
-          description: Simple rental recieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_GetSimpleRentalsForItem'
         default:
           description: Unexpected Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /rentals:
+  /shop/itemShop:
     post:
       tags:
-        - Rentals
-      summary: Create new rental record
+        - Availability
+      description: Endpoint for item shop
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Request_CreateRental'
+              $ref: '#/components/schemas/Request_ItemShop'
       responses:
-        '200':
-          description: Rental created successfully
+        '204':
+          description: Response of created rental id
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_CreateRental'
-  /rentals/{id}:
-    get:
-      tags:
-        - Rentals
-      summary: Get rental with full info
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Rental retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_GetSingleRental'
-        default:
-          description: Unexpected Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_Error'
-    put:
-      tags:
-        - Rentals
-      summary: Update rental price
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Request_UpdateRental'
-      responses:
-        '200':
-          description: Rental updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_GetSingleRental'
-        default:
-          description: Unexpected Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_Error'
-  /rentals/{id}/close:
-    post:
-      tags:
-        - Rentals
-      summary: Close rental
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Request_CloseRental'
-      responses:
-        '200':
-          description: Rental closed successfully
+                $ref: '#/components/schemas/Response_GetId'
         default:
           description: Unexpected Error
           content:
@@ -552,13 +500,13 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Error'
-    ItemStatusTypeEnum:
-      description: Item rental status
+    RentalStatusTypeEnum:
+      description: Rental status
       enum:
-      - AVAILABLE
-      - PENDING
-      - RENTED
-      example: AVAILABLE
+      - RESERVED
+      - CANCELED
+      - FINISHED
+      example: RESERVED
     MaintenanceTypeEnum:
       description: Maintenance type enum
       enum:
@@ -597,6 +545,21 @@ components:
           description: Last page with info for current size
           type: integer
           example: 2
+    RentalDate:
+      description: Rental date range
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          format: date-time
+          example: "2025-12-12-19:30"
+        to:
+          type: string
+          format: date-time
+          example: "2025-12-12-22:00"
+
     Request_AddItem:
       description: Schema for adding new item
       type: object
@@ -648,68 +611,48 @@ components:
           type: string
           example: Everything is OK
     Request_ItemCheck:
-      description: Schema for item check
+      description: Request to check selected items.
       required:
-        - itins
+        - rental
+        - items
       properties:
-        itins:
-          nullable: false
+        token:
+          type: string
+          format: uuid
+        rental:
+          $ref: '#/components/schemas/RentalDate'
+        items:
           type: array
-          description: Item ids
           items:
             type: integer
             format: int64
-          minItems: 1
-        key:
-          type: string
-          format: uuid
-          description: Key to cache
-          default: null
-    Request_CreateRental:
-      description: Schema for adding rental
+          minimum: 1
+          maximum: 100
+    Request_ItemShop:
+      description: Request to shop selected items. Require itemCheck before
       required:
-        - key
-        - itins
-        - buyer
+        - token
+        - rental
+        - items
         - paid
+        - buyer
       properties:
-        key:
-          nullable: false
+        token:
           type: string
           format: uuid
-          example: 123e4567-e89b-12d3-a456-426614174000
-        itins:
-          nullable: false
+        rental:
+          $ref: '#/components/schemas/RentalDate'
+        items:
           type: array
           items:
             type: integer
             format: int64
-          example: [1,5,3,2]
-          minItems: 1
-        buyer:
-          $ref: '#/components/schemas/BuyerEntity'
+          minimum: 1
+          maximum: 100
         paid:
           $ref: '#/components/schemas/Price'
-    Request_UpdateRental:
-      description: Schema for rental record (price) update
-      anyOf:
-        - required:
-            - price
-        - required:
-            - paidPrice
-      properties:
-        price:
-          $ref: '#/components/schemas/Price'
-        paidPrice:
-          $ref: '#/components/schemas/Price'
-    Request_CloseRental:
-      description: Schema for closing rental
-      properties:
-        itemsMaintenance:
-          description: info about damaged maintenance
-          type: array
-          items:
-            $ref: '#/components/schemas/MaintenanceOnRentalEndEntity'
+        buyer:
+          $ref: '#/components/schemas/BuyerEntity'
 
     ItemEntity:
       description: Returned item record
@@ -720,8 +663,6 @@ components:
         - category
         - addDate
         - lastMaintenance
-        - lastRental
-        - status
         - damaged
       properties:
         id:
@@ -743,11 +684,6 @@ components:
         lastMaintenance:
           description: Item last maintenance date
           $ref: '#/components/schemas/CurrentDate'
-        lastRental:
-          description: Item last rental date
-          $ref: '#/components/schemas/CurrentDate'
-        status:
-          $ref: '#/components/schemas/ItemStatusTypeEnum'
         damaged:
           description: Item damaged status
           type: boolean
@@ -783,25 +719,6 @@ components:
           type: string
           description: Maintenance note
           example: Everything is ok
-    SimpleRentalEntity:
-      type: object
-      description: Schema for rental record
-      required:
-        - id
-        - rentalDate
-        - open
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: rental id
-          example: 52
-        rentalDate:
-          description: date of rental
-          $ref: '#/components/schemas/CurrentDate'
-        open:
-          type: boolean
-          example: true
     BuyerEntity:
       description: Buyer schema entity
       required:
@@ -823,79 +740,6 @@ components:
         pesel:
           type: string
           format: pesel
-    FullRentalEntity:
-      description: Full rental record schema
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: rental id
-          example: 15
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ItemEntity'
-          description: items rented in this rental
-        rentalDate:
-          description: date of rental
-          $ref: '#/components/schemas/CurrentDate'
-        price:
-          $ref: '#/components/schemas/Price'
-        paidPrice:
-          $ref: '#/components/schemas/Price'
-        open:
-          type: boolean
-          description: is rental still active
-        buyer:
-          $ref: '#/components/schemas/BuyerEntity'
-    CheckItemEntity:
-      description: Schema for check item response
-      required:
-        - key
-        - validatedItins
-        - allItins
-      properties:
-        validatedItins:
-          type: array
-          description: Validated item ids
-          items:
-            type: integer
-            format: int64
-          example: [0,5,4,3]
-        allItins:
-          type: array
-          description: All cached ids
-          items:
-            type: integer
-            format: int64
-          example: [0,5,4,3]
-        validUntil:
-          description: TTL
-          $ref: '#/components/schemas/CurrentDate'
-        price:
-          $ref: '#/components/schemas/Price'
-        key:
-          type: string
-          format: uuid
-          description: Key to cache
-          example: 123e4567-e89b-12d3-a456-426614174000
-    MaintenanceOnRentalEndEntity:
-      description: Send on rental end
-      required:
-        - id
-        - type
-        - note
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: item id
-          example: 15
-        type:
-          $ref: '#/components/schemas/MaintenanceTypeEnum'
-        note:
-          type: string
-          example: Damaged
 
     Response_Error:
       description: Schema for error response
@@ -976,43 +820,27 @@ components:
         pages:
           $ref: '#/components/schemas/Pages'
     Response_ItemCheck:
-      description: Schema for item check response
+      description: Response for itemCheck
       required:
         - timestamp
-        - checkItem
+        - valid
+        - notValid
+        - token
+        - ttl
       properties:
         timestamp:
-          $ref: '#/components/schemas/CurrentDate'
-        checkItem:
-          $ref: '#/components/schemas/CheckItemEntity'
-    Response_GetSimpleRentalsForItem:
-      description: Schema for getting multiple simple rental record for item
-      required:
-        - timestamp
-        - rentals
-      properties:
-        timestamp:
-          $ref: '#/components/schemas/CurrentDate'
-        rentals:
+          $ref: "#/components/schemas/CurrentDate"
+        valid:
           type: array
           items:
-            $ref: '#/components/schemas/SimpleRentalEntity'
-    Response_CreateRental:
-      description: Schema for response on rental create
-      required:
-      - timestamp
-      - rental
-      properties:
-        timestamp:
-          $ref: '#/components/schemas/CurrentDate'
-        rental:
-          $ref: '#/components/schemas/FullRentalEntity'
-    Response_GetSingleRental:
-      required:
-        - timestamp
-        - rental
-      properties:
-        timestamp:
-          $ref: '#/components/schemas/CurrentDate'
-        rental:
-          $ref: '#/components/schemas/FullRentalEntity'
+            $ref: '#/components/schemas/ItemEntity'
+        notValid:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemEntity'
+        token:
+          type: string
+          format: uuid
+        ttl:
+          type: string
+          format: date-time

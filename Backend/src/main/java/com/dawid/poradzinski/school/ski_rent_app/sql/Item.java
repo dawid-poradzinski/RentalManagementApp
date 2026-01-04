@@ -5,11 +5,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.openapitools.model.ItemStatusTypeEnum;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,16 +41,12 @@ public class Item {
 
     private OffsetDateTime lastMaintenance;
 
-    private OffsetDateTime lastRental;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Maintenance> maintenances;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<RentalItem> rentals;
-
-    @Enumerated(EnumType.STRING)
-    private ItemStatusTypeEnum status = ItemStatusTypeEnum.AVAILABLE;
     
     private Boolean damaged = false;
 
