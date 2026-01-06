@@ -1,10 +1,13 @@
-# CURRENT VERSION: 0.0.5
+# CURRENT VERSION: 0.0.6
+
+## [0.0.6]
+`Init frontend in react vite using tailwindcss. Update dockerfile to generate static frontend into backend`.
 
 ### [0.0.5]
-`Working saving to cache and expire. Working itemCheck to check item availability in specific time window in cache and db. Working itemRefresh to find available items in specific time window` 
+`Working saving to cache and expire. Working itemCheck to check item availability in specific time window in cache and db. Working itemRefresh to find available items in specific time window.` 
 
 ### [0.0.4]
-`Change rental sql structure for futhure rentals. Change schema for rentals. Rewrite rental and shop controllers`
+`Change rental sql structure for futhure rentals. Change schema for rentals. Rewrite rental and shop controllers.`
 
 ### [0.0.3]
 `Added groovy for unit tests.`
