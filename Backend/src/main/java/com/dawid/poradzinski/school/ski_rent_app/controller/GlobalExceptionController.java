@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openapitools.model.Error;
-import org.openapitools.model.ResponseError;
+import org.openapitools.model.ErrorModel;
+import org.openapitools.model.ResponseErrorModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -23,9 +23,9 @@ import tools.jackson.databind.exc.MismatchedInputException;
 public class GlobalExceptionController {
 
     @ExceptionHandler
-    public ResponseEntity<ResponseError> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ResponseErrorModel> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         
-        List<Error> errors = new ArrayList<>();
+        List<ErrorModel> errors = new ArrayList<>();
 
         exception.getBindingResult().getAllErrors().forEach(error -> {
             String description = error.getDefaultMessage();
@@ -42,7 +42,7 @@ public class GlobalExceptionController {
 
             String fieldValue = Objects.requireNonNullElse(((FieldError) error).getRejectedValue(), "").toString();
             
-            errors.add(new Error()
+            errors.add(new ErrorModel()
                     .fieldPath(fieldPath)
                     .fieldName(fieldName)
                     .fieldValue(description.contains("size must be between") ? description : fieldValue)
@@ -50,11 +50,11 @@ public class GlobalExceptionController {
                     .message(description));
         });
 
-        return ResponseEntity.status(exception.getStatusCode()).body(new ResponseError().timestamp(OffsetDateTime.now()).errors(errors));
+        return ResponseEntity.status(exception.getStatusCode()).body(new ResponseErrorModel().timestamp(OffsetDateTime.now()).errors(errors));
     }
 
     @ExceptionHandler
-    ResponseEntity<ResponseError> handleHttpMessageNotReadableExceltion(HttpMessageNotReadableException exception) {
+    ResponseEntity<ResponseErrorModel> handleHttpMessageNotReadableExceltion(HttpMessageNotReadableException exception) {
 
         List<String> pathParts = new ArrayList<>();
         String fieldValue = "";
@@ -94,28 +94,32 @@ public class GlobalExceptionController {
             fieldName = pathBuilder.isEmpty() ? "." : pathBuilder.toString();
         }
 
-        Error error = new Error().fieldName(fieldName).fieldPath(fieldPath).fieldValue(fieldValue).message(exception.getMessage()).category(category);
+        ErrorModel error = new ErrorModel().fieldName(fieldName).fieldPath(fieldPath).fieldValue(fieldValue).message(exception.getMessage()).category(category);
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError().timestamp(OffsetDateTime.now()).errors(List.of(error)));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseErrorModel().timestamp(OffsetDateTime.now()).errors(List.of(error)));
     }
 
-    @ExceptionHandler ResponseEntity<ResponseError> handleRuntimeException(RuntimeException exception) {
-        Error error = new Error();
+    @ExceptionHandler ResponseEntity<ResponseErrorModel> handleRuntimeException(RuntimeException exception) {
+        ErrorModel error = new ErrorModel();
 
-        String[] message = exception.getMessage().split(":");
+        if (exception.getMessage().contains(":")) {
+            String[] message = exception.getMessage().split(":");
+            error.setMessage(message[0]);
+            error.setFieldValue(message[1].strip());
+        } else {
+            error.setMessage(exception.getMessage());
+        }
         error.setCategory(exception.getClass().getSimpleName());
-        error.setMessage(message[0]);
-        error.setFieldValue(message[1].strip());
-
-        List<Error> errors = new ArrayList<>();
+        
+        List<ErrorModel> errors = new ArrayList<>();
         errors.add(error);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseError().timestamp(OffsetDateTime.now()).errors(errors));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseErrorModel().timestamp(OffsetDateTime.now()).errors(errors));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ResponseError> handleErrors(Exception exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseError());
+    public ResponseEntity<ResponseErrorModel> handleErrors(Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseErrorModel());
     }
 
     private String getValueFromPath(JacksonException.Reference path) {

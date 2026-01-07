@@ -3,6 +3,9 @@ package com.dawid.poradzinski.school.ski_rent_app.addons.params;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.openapitools.model.PlacesEnum;
+import org.openapitools.model.SizeEnum;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +21,6 @@ public class GetItemRefreshParams extends PaginationParams {
     OffsetDateTime from;
     @NotBlank
     OffsetDateTime to;
+    SizeEnum itemSize;
+    PlacesEnum place;
 }

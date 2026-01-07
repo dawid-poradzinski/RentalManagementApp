@@ -14,7 +14,7 @@ tags:
 servers:
   - url: http://localhost:8080
 paths:
-  /items:
+  /v1/api/items:
     post:
       tags:
         - Items
@@ -37,7 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
     get:
       tags:
         - Items
@@ -51,18 +51,6 @@ paths:
             minimum: 0
           required: false
         - in: query
-          name: from
-          schema:
-            type: string
-            format: date-time
-          required: true
-        - in: query
-          name: to
-          schema:
-            type: string
-            format: date-time
-          required: true
-        - in: query
           name: size
           schema:
             type: integer
@@ -73,15 +61,23 @@ paths:
         - in: query
           name: category
           schema:
-            type: array
-            items:
-              type: string
+            type: string
           required: false
         - in: query
           name: damaged
           schema:
             type: boolean
           required: false
+        - in: query
+          name: itemSize
+          required: false
+          schema:
+            $ref: "#/components/schemas/SizeEnum"
+        - in: query
+          name: place
+          required: false
+          schema:
+            $ref: "#/components/schemas/PlacesEnum"
       responses:
         '200':
           description: Item retrieved successfully
@@ -94,8 +90,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /items/{id}:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/items/{id}:
     get:
       tags:
         - Items
@@ -118,7 +114,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
     put:
       summary: Update item by id
       tags:
@@ -147,7 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
     delete:
       summary: Delete item by id
       tags:
@@ -170,8 +166,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /items/{id}/maintenances:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/items/{id}/maintenances:
     post:
       summary: Add maintenance to item
       tags:
@@ -201,7 +197,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
     get:
       summary: Get maintenance records for item
       tags:
@@ -229,10 +225,22 @@ paths:
             maximum: 100
           required: false
         - in: query
-          name: type
+          name: types
           schema:
-            $ref: '#/components/schemas/MaintenanceTypeEnum'
+            type: array
+            items:
+              $ref: '#/components/schemas/MaintenanceTypeEnum'
           required: false
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Maintenances retrieved successfully
@@ -245,8 +253,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /maintenances:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/maintenances:
     get:
       summary: Get multiple maintenances paginated and filtered
       tags:
@@ -268,10 +276,22 @@ paths:
             maximum: 100
           required: false
         - in: query
-          name: type
+          name: types
           schema:
-            $ref: '#/components/schemas/MaintenanceTypeEnum'
+            type: array
+            items:
+              $ref: '#/components/schemas/MaintenanceTypeEnum'
           required: false
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Get multiple maintenance records
@@ -284,8 +304,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /maintenances/{id}:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/maintenances/{id}:
     get:
       summary: Get single maintenance record by id
       tags:
@@ -308,7 +328,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
     put:
       summary: Update maintenance record by id
       tags:
@@ -336,7 +356,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
     delete:
       summary: Delete maintenance record by id
       tags:
@@ -359,8 +379,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /shop/itemRefresh:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/shop/itemRefresh:
     get:
       summary: Get items availabilable in specific time window via only DB
       tags:
@@ -385,9 +405,7 @@ paths:
           name: category
           required: false
           schema:
-            type: array
-            items:
-              type: string
+            type: string
         - in: query
           name: from
           required: true
@@ -400,6 +418,16 @@ paths:
           schema:
             type: string
             format: date-time
+        - in: query
+          name: itemSize
+          required: false
+          schema:
+            $ref: "#/components/schemas/SizeEnum"
+        - in: query
+          name: place
+          required: false
+          schema:
+            $ref: "#/components/schemas/PlacesEnum"
       responses:
         '200':
           description: Successfully retrieved item data
@@ -412,8 +440,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /shop/itemCheck:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/shop/itemCheck:
     post:
       tags:
         - Availability
@@ -436,8 +464,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
-  /shop/itemShop:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/shop/itemShop:
     post:
       tags:
         - Availability
@@ -459,7 +487,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Response_Error'
+                $ref: '#/components/schemas/Response_ErrorModel'
 
 components:
   schemas:
@@ -467,7 +495,7 @@ components:
       description: Current date
       type: string
       format: date-time
-    Error:
+    ErrorModel:
       description: Returned error
       type: object
       required:
@@ -495,11 +523,11 @@ components:
           description: Error value
           type: string
           example: []
-    Errors:
+    ErrorsModel:
       description: Returned errors
       type: array
       items:
-        $ref: '#/components/schemas/Error'
+        $ref: '#/components/schemas/ErrorModel'
     RentalStatusTypeEnum:
       description: Rental status
       enum:
@@ -559,12 +587,30 @@ components:
           type: string
           format: date-time
           example: "2025-12-12-22:00"
+    SizeEnum:
+      description: Available sizes enum
+      enum:
+      - "S"
+      - "M"
+      - "L"
+      - "XL"
+      - "2XL"
+    PlacesEnum:
+      description: Available places enum
+      enum:
+      - "Bialka Tatrzanska, PL"
+      - "Krakow, PL"
+      - "Kranjska Gora, SI"
+      - "Foppolo, IT"
 
     Request_AddItem:
       description: Schema for adding new item
       type: object
       required:
         - name
+        - place
+        - size
+        - image
         - category
         - price
       properties:
@@ -572,6 +618,16 @@ components:
           description: Visible name of item
           type: string
           example: Pink helmet
+        place:
+          description: Where item is
+          $ref: "#/components/schemas/PlacesEnum"
+        size:
+          description: Item size
+          $ref: '#/components/schemas/SizeEnum'
+        image:
+          description: Path to image
+          type: string
+          example: "/Placeholder.png"
         category:
           description: Item category
           type: string
@@ -588,6 +644,12 @@ components:
         category:
           type: string
           example: Ski
+        place:
+          description: Where item is
+          $ref: "#/components/schemas/PlacesEnum"
+        size:
+          description: Item size
+          $ref: '#/components/schemas/SizeEnum'
         price:
           $ref: '#/components/schemas/Price'
     Request_AddMaintenance:
@@ -660,6 +722,9 @@ components:
       required:
         - id
         - name
+        - image
+        - place
+        - size
         - category
         - addDate
         - lastMaintenance
@@ -670,10 +735,19 @@ components:
           type: integer
           format: int64
           example: 21
+        image:
+          description: link fo image
+          type: string
         name:
           description: Item name
           type: string
           example: Pink helmet
+        place:
+          description: Where item is
+          $ref: "#/components/schemas/PlacesEnum"
+        size:
+          description: Item size
+          $ref: '#/components/schemas/SizeEnum'
         category:
           description: Item category
           type: string
@@ -695,7 +769,9 @@ components:
       type: object
       required:
         - id
+        - itemName
         - itemId
+        - itemImage
         - type
         - date
         - note
@@ -705,11 +781,16 @@ components:
           format: int64
           description: Maintenance id
           example: 15
+        itemName:
+          type: string
+          description: Item name
+          example: Pink Helmet
         itemId:
           type: integer
           format: int64
-          description: Item id
-          example: 21
+          example: 7
+        itemImage:
+          type: string
         type:
           $ref: '#/components/schemas/MaintenanceTypeEnum'
         date:
@@ -741,7 +822,7 @@ components:
           type: string
           format: pesel
 
-    Response_Error:
+    Response_ErrorModel:
       description: Schema for error response
       required:
         - timestamp
@@ -750,7 +831,7 @@ components:
         timestamp:
           $ref: '#/components/schemas/CurrentDate'
         errors:
-          $ref: '#/components/schemas/Errors'
+          $ref: '#/components/schemas/ErrorsModel'
     Response_GetId:
       description: Schema for returning only id
       type: object

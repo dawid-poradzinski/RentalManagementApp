@@ -20,9 +20,11 @@ public class MaintenanceSpecification {
                 predicates.add(cb.equal(root.get("item").get("id"), itemId));
             }
 
-            if(params.getType() != null) {
-                predicates.add(cb.equal(root.get("maintenanceTypeEnum"), params.getType()));
+            if(params.getTypes() != null && !params.getTypes().isEmpty()) {
+                predicates.add(root.get("maintenanceTypeEnum").in(params.getTypes()));
             }
+
+            query.orderBy(cb.desc(root.get("date")));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

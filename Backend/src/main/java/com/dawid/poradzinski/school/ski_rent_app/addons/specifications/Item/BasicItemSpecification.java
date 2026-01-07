@@ -24,6 +24,14 @@ public class BasicItemSpecification {
                 predicates.add(categoryJoin.get("category").in(params.getCategory()));
             }
 
+            if(params.getItemSize() != null) {
+                predicates.add(cb.equal(root.get("size"), params.getItemSize()));
+            }
+
+            if(params.getPlace() != null) {
+                predicates.add(cb.equal(root.get("place"), params.getPlace()));
+            }
+
             if(params.getDamaged() != null) {
                 predicates.add(cb.equal(root.get("damaged"), params.getDamaged()));
             }

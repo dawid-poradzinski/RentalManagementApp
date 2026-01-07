@@ -8,6 +8,7 @@ import org.openapitools.model.ResponseGetMultipleMaintenances;
 import org.openapitools.model.ResponseGetSingleMaintenance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
@@ -41,21 +42,21 @@ public class MaintenanceService {
         Maintenance maintenance = maintenanceMapper.mapRequestAddMaintenance(request);
         maintenance.setItem(item);
 
+        item.setLastMaintenance(OffsetDateTime.now());
         if(maintenance.getMaintenanceTypeEnum() == MaintenanceTypeEnum.DAMAGE && !item.getDamaged()) {
             item.setDamaged(true);
-            itemRepository.save(item);
         } else if (maintenance.getMaintenanceTypeEnum() == MaintenanceTypeEnum.REPAIR && item.getDamaged()) {
             item.setDamaged(false);
-            itemRepository.save(item);
         }
+        itemRepository.save(item);
 
         return new ResponseGetSingleMaintenance()
                 .timestamp(OffsetDateTime.now())
-                .maintenance(maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance), itemId));
+                .maintenance(maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance)));
     }
 
     public ResponseGetMultipleMaintenances getMaintenancesForItem(Long itemId, GetMaintenancesParams params) {
-        var page = PageRequest.of(params.getPage(), params.getSize());
+        var page = PageRequest.of(params.getPage(), params.getSize(), Sort.by("date").descending());
 
         Page<Maintenance> maintenances = maintenanceRepository.findAll(MaintenanceSpecification.filter(params, itemId), page);
 
@@ -66,7 +67,7 @@ public class MaintenanceService {
     }
 
     public ResponseGetMultipleMaintenances getMaintenances(GetMaintenancesParams params) {
-        var page = PageRequest.of(params.getPage(), params.getSize());
+        var page = PageRequest.of(params.getPage(), params.getSize(), Sort.by("date").descending());
 
         Page<Maintenance> maintenances = maintenanceRepository.findAll(MaintenanceSpecification.filter(params, null), page);
 

@@ -2,6 +2,8 @@ package com.dawid.poradzinski.school.ski_rent_app.addons.params;
 
 import java.util.List;
 
+import org.openapitools.model.PlacesEnum;
+import org.openapitools.model.SizeEnum;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +16,7 @@ public class GetItemsParams extends PaginationParams{
 
     List<String> category;
     Boolean damaged;
+    SizeEnum itemSize;
+    PlacesEnum place;
     
 }
