@@ -1,5 +1,6 @@
 package com.dawid.poradzinski.school.ski_rent_app.addons.mapper;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.openapitools.model.ItemEntity;
@@ -24,6 +25,9 @@ public class ItemMapper {
         item.setCategory(itemCategory);
         item.setPriceAmount(requestAddItem.getPrice().getPriceAmount());
         item.setPriceCurrency(requestAddItem.getPrice().getPriceCurrency());
+        item.setSize(requestAddItem.getSize());
+        item.setPlace(requestAddItem.getPlace());
+        item.setLastMaintenance(OffsetDateTime.now());
 
         return item;
     }
@@ -34,10 +38,13 @@ public class ItemMapper {
         itemEntity.setAddDate(item.getAddDate());
         itemEntity.setCategory(item.getCategory().getCategory());
         itemEntity.setDamaged(item.getDamaged());
+        itemEntity.setImage(item.getImage());
         itemEntity.setId(item.getId());
         itemEntity.setLastMaintenance(item.getLastMaintenance());
         itemEntity.setName(item.getName());
         itemEntity.setPrice(new Price().priceAmount(item.getPriceAmount()).priceCurrency(item.getPriceCurrency()));
+        itemEntity.setSize(item.getSize());
+        itemEntity.setPlace(item.getPlace());
         
         return itemEntity;
     }
@@ -51,7 +58,7 @@ public class ItemMapper {
 
         pages.setCurrentPage(getItemsParams.getPage());
         pages.setCurrentSize(getItemsParams.getSize());
-        pages.setMaxPage(page.getTotalPages() - 1);
+        pages.setMaxPage(page.getTotalPages());
 
         return pages;
     }
@@ -61,7 +68,7 @@ public class ItemMapper {
 
         pages.setCurrentPage(getItemsParams.getPage());
         pages.setCurrentSize(getItemsParams.getSize());
-        pages.setMaxPage(page.getTotalPages() - 1);
+        pages.setMaxPage(page.getTotalPages());
 
         return pages;
     }

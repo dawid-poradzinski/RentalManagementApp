@@ -8,8 +8,6 @@ import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshPar
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
 import com.dawid.poradzinski.school.ski_rent_app.service.ItemService;
 
-import jakarta.websocket.server.PathParam;
-
 import org.openapitools.model.RequestAddItem;
 import org.openapitools.model.ResponseGetId;
 import org.openapitools.model.ResponseGetMultipleItems;
@@ -18,13 +16,16 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 
 @RestController
-@RequestMapping("items")
+@CrossOrigin
+@RequestMapping("v1/api/items")
 public class ItemController {
 
     private ItemService itemService;
@@ -45,12 +46,12 @@ public class ItemController {
     
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseGetSingleItem> getItem(@PathParam("id") Long id) throws NotFoundException {
+    public ResponseEntity<ResponseGetSingleItem> getItem(@PathVariable Long id) throws NotFoundException {
         return ResponseEntity.ok(itemService.getItem(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseGetId> deleteItem(@PathParam("id") Long id) throws NotFoundException {
+    public ResponseEntity<ResponseGetId> deleteItem(@PathVariable Long id) throws NotFoundException {
         return ResponseEntity.status(org.springframework.http.HttpStatus.GONE).body(itemService.deleteItem(id));
     }
     

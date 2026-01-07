@@ -9,6 +9,7 @@ import org.openapitools.model.ResponseGetMultipleItems;
 import org.openapitools.model.ResponseGetSingleItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
@@ -58,7 +59,7 @@ public class ItemService {
 
     public ResponseGetMultipleItems getItems(GetItemsParams getItemsParams) {
 
-        var page = PageRequest.of(getItemsParams.getPage(), getItemsParams.getSize());
+        var page = PageRequest.of(getItemsParams.getPage(), getItemsParams.getSize(), Sort.by("addDate").descending());
 
         Page<Item> items = itemRepository.findAll(BasicItemSpecification.filter(getItemsParams), page);
 
@@ -97,7 +98,7 @@ public class ItemService {
 
     public ResponseGetMultipleItems getItemRefresh(GetItemRefreshParams params) {
         
-        var page = PageRequest.of(params.getPage(), params.getSize());
+        var page = PageRequest.of(params.getPage(), params.getSize(), Sort.by("addDate").descending());
 
         Page<Item> items = itemRepository.findAll(ItemRefreshSpecification.filter(params), page);
 

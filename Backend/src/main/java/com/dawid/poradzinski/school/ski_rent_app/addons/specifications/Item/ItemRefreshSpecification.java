@@ -29,6 +29,14 @@ public class ItemRefreshSpecification {
                 predicates.add(categoryJoin.get("category").in(params.getCategory()));
             }
 
+            if(params.getItemSize() != null) {
+                predicates.add(cb.equal(root.get("size"), params.getItemSize()));
+            }
+
+            if(params.getPlace() != null) {
+                predicates.add(cb.equal(root.get("place"), params.getPlace()));
+            }
+            
             if (params.getFrom() != null && params.getTo() != null) {
 
                 Subquery<Long> subquery = query.subquery(Long.class);

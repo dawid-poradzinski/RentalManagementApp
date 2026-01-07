@@ -21,20 +21,12 @@ public class MaintenanceMapper {
         return maintenance;
     }
 
-    public MaintenanceEntity mapMaintenanceToMaintenanceEntity(Maintenance maintenance, Long itemId) {
-        MaintenanceEntity entity = new MaintenanceEntity();
-        entity.setId(maintenance.getId());
-        entity.setItemId(itemId);
-        entity.setDate(maintenance.getDate());
-        entity.setType(maintenance.getMaintenanceTypeEnum());
-        entity.setNote(maintenance.getNote());
-        return entity;
-    }
-
     public MaintenanceEntity mapMaintenanceToMaintenanceEntity(Maintenance maintenance) {
         MaintenanceEntity entity = new MaintenanceEntity();
         entity.setId(maintenance.getId());
+        entity.setItemName(maintenance.getItem().getName());
         entity.setItemId(maintenance.getItem().getId());
+        entity.setItemImage(maintenance.getItem().getImage());
         entity.setDate(maintenance.getDate());
         entity.setType(maintenance.getMaintenanceTypeEnum());
         entity.setNote(maintenance.getNote());

@@ -5,6 +5,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.openapitools.model.PlacesEnum;
+import org.openapitools.model.SizeEnum;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,6 +43,11 @@ public class Item {
 
     private OffsetDateTime lastMaintenance;
 
+    private String image = "/Placeholder.png";
+
+    private PlacesEnum place;
+
+    private SizeEnum size;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Maintenance> maintenances;
