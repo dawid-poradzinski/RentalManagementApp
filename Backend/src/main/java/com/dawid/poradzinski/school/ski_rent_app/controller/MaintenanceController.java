@@ -16,10 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
+@RequestMapping("v1/api")
 public class MaintenanceController {
 
     private MaintenanceService maintenanceService;
@@ -29,12 +32,12 @@ public class MaintenanceController {
     }
 
     @PostMapping("items/{id}/maintenances")
-    public ResponseEntity<ResponseGetSingleMaintenance> addMaintenance(@PathParam("id") Long id, @RequestBody RequestAddMaintenance request) throws NotFoundException {
+    public ResponseEntity<ResponseGetSingleMaintenance> addMaintenance(@PathVariable Long id, @RequestBody RequestAddMaintenance request) throws NotFoundException {
         return ResponseEntity.status(HttpStatus.CREATED).body(maintenanceService.addMaintenance(id, request));
     }
 
     @GetMapping("items/{id}/maintenances")
-    public ResponseEntity<ResponseGetMultipleMaintenances> getMaintenancesForItem(@PathParam("id") Long id, @ParameterObject GetMaintenancesParams params) {
+    public ResponseEntity<ResponseGetMultipleMaintenances> getMaintenancesForItem(@PathVariable Long id, @ParameterObject GetMaintenancesParams params) {
         return ResponseEntity.ok(maintenanceService.getMaintenancesForItem(id, params));
     }
 
@@ -44,7 +47,7 @@ public class MaintenanceController {
     }
 
     @GetMapping("maintenances/{id}")
-    public ResponseEntity<ResponseGetSingleMaintenance> getMaintenance(@PathParam("id") Long id) {
+    public ResponseEntity<ResponseGetSingleMaintenance> getMaintenance(@PathVariable Long id) {
         return ResponseEntity.ok(maintenanceService.getMaintenance(id));
     }
     

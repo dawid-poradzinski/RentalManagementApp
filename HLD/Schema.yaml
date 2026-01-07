@@ -14,7 +14,7 @@ tags:
 servers:
   - url: http://localhost:8080
 paths:
-  /items:
+  /v1/api/items:
     post:
       tags:
         - Items
@@ -95,7 +95,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /items/{id}:
+  /v1/api/items/{id}:
     get:
       tags:
         - Items
@@ -171,7 +171,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /items/{id}/maintenances:
+  /v1/api/items/{id}/maintenances:
     post:
       summary: Add maintenance to item
       tags:
@@ -246,7 +246,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /maintenances:
+  /v1/api/maintenances:
     get:
       summary: Get multiple maintenances paginated and filtered
       tags:
@@ -285,7 +285,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /maintenances/{id}:
+  /v1/api/maintenances/{id}:
     get:
       summary: Get single maintenance record by id
       tags:
@@ -360,7 +360,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /shop/itemRefresh:
+  /v1/api/shop/itemRefresh:
     get:
       summary: Get items availabilable in specific time window via only DB
       tags:
@@ -413,7 +413,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /shop/itemCheck:
+  /v1/api/shop/itemCheck:
     post:
       tags:
         - Availability
@@ -437,7 +437,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_Error'
-  /shop/itemShop:
+  /v1/api/shop/itemShop:
     post:
       tags:
         - Availability
