@@ -8,8 +8,6 @@ import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshPar
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
 import com.dawid.poradzinski.school.ski_rent_app.service.ItemService;
 
-import jakarta.websocket.server.PathParam;
-
 import org.openapitools.model.RequestAddItem;
 import org.openapitools.model.ResponseGetId;
 import org.openapitools.model.ResponseGetMultipleItems;

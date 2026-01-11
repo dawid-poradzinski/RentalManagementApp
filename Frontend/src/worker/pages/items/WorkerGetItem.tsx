@@ -3,6 +3,7 @@ import { ItemsApi, type V1ApiItemsIdGetRequest } from "../../../../generated-ts/
 import { useState, useEffect } from "react";
 import { ResponseErrorFromJSON, ResponseErrorToJSON, type ResponseGetSingleItem } from "../../../../generated-ts/models";
 import { ResponseError } from "../../../../generated-ts/runtime";
+import ItemFullRender from "../../addons/Renders/ItemFullRender";
 
 function WorkerGetItem() {
     const { id } = useParams();
@@ -41,7 +42,7 @@ function WorkerGetItem() {
     return (
         <>
             {error && <div className="text-red-400 mb-2">{error}</div>}
-            {response && <div className="text-red-400 mb-2">{response.item.id}</div>}
+            {response && <div className="mb-2 w-full h-fit flex "><ItemFullRender item={response.item} /></div>}
         </>   
     );
 }

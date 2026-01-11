@@ -41,6 +41,11 @@ public class Item {
 
     private OffsetDateTime lastMaintenance;
 
+    private String image = "/Placeholder.png";
+
+    private String place;
+
+    private String size;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<Maintenance> maintenances;

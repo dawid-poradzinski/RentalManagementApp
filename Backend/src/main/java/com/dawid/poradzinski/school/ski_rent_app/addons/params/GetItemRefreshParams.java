@@ -18,4 +18,6 @@ public class GetItemRefreshParams extends PaginationParams {
     OffsetDateTime from;
     @NotBlank
     OffsetDateTime to;
+    String place;
+    String itemSize;
 }

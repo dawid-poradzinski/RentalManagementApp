@@ -14,5 +14,7 @@ public class GetItemsParams extends PaginationParams{
 
     List<String> category;
     Boolean damaged;
+    String itemSize;
+    String place;
     
 }

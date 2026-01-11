@@ -9,6 +9,10 @@ import WorkerMainMenu from './worker/pages/menus/WorkerMainMenu.tsx';
 import WorkerMaintenanceMenu from './worker/pages/menus/WorkerMaintenanceMenu.tsx';
 import WorkerRentalMenu from './worker/pages/menus/WorkerRentalMenu.tsx';
 import WorkerGetItem from './worker/pages/items/WorkerGetItem.tsx';
+import WorkerGetMaintenancesForitem from './worker/pages/maintenances/WorkerGetMaintenancesForitem.tsx';
+import WorkerGetMaintenance from './worker/pages/maintenances/WorkerGetMaintenance.tsx';
+import WorkerGetMaintenances from './worker/pages/maintenances/WorkerGetMaintenances.tsx';
+import WorkerGetItems from './worker/pages/items/WorkerGetItems.tsx';
 
 const router = createBrowserRouter([
   {
@@ -38,14 +42,39 @@ const router = createBrowserRouter([
                 Component: WorkerAddItem
               },
               {
+                path: "find",
+                Component: WorkerGetItems
+              },
+              {
                 path: ":id",
-                Component: WorkerGetItem
+                Component: WorkerGetItem,
+              },
+              {
+                path: ":id/maintenances",
+                Component: WorkerGetMaintenancesForitem,
+              },
+              {
+                path: ":id/maintenances/add",
+                Component: WorkerAddItem
               }
             ]
           },
           {
-            path: "/worker/maintenances",
-            Component: WorkerMaintenanceMenu
+            path: "maintenances",
+            children: [
+              {
+                index: true,
+                Component: WorkerMaintenanceMenu
+              },
+              {
+                path: ":id",
+                Component: WorkerGetMaintenance
+              },
+              {
+                path: "find",
+                Component: WorkerGetMaintenances
+              }
+            ]
           },
           {
             path: "/worker/rentals",

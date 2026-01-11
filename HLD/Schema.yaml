@@ -51,18 +51,6 @@ paths:
             minimum: 0
           required: false
         - in: query
-          name: from
-          schema:
-            type: string
-            format: date-time
-          required: true
-        - in: query
-          name: to
-          schema:
-            type: string
-            format: date-time
-          required: true
-        - in: query
           name: size
           schema:
             type: integer
@@ -73,15 +61,23 @@ paths:
         - in: query
           name: category
           schema:
-            type: array
-            items:
-              type: string
+            type: string
           required: false
         - in: query
           name: damaged
           schema:
             type: boolean
           required: false
+        - in: query
+          name: itemSize
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: place
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Item retrieved successfully
@@ -229,10 +225,22 @@ paths:
             maximum: 100
           required: false
         - in: query
-          name: type
+          name: types
           schema:
-            $ref: '#/components/schemas/MaintenanceTypeEnum'
+            type: array
+            items:
+              $ref: '#/components/schemas/MaintenanceTypeEnum'
           required: false
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Maintenances retrieved successfully
@@ -268,10 +276,22 @@ paths:
             maximum: 100
           required: false
         - in: query
-          name: type
+          name: types
           schema:
-            $ref: '#/components/schemas/MaintenanceTypeEnum'
+            type: array
+            items:
+              $ref: '#/components/schemas/MaintenanceTypeEnum'
           required: false
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Get multiple maintenance records
@@ -385,9 +405,7 @@ paths:
           name: category
           required: false
           schema:
-            type: array
-            items:
-              type: string
+            type: string
         - in: query
           name: from
           required: true
@@ -400,6 +418,16 @@ paths:
           schema:
             type: string
             format: date-time
+        - in: query
+          name: itemSize
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: place
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Successfully retrieved item data
@@ -565,6 +593,9 @@ components:
       type: object
       required:
         - name
+        - place
+        - size
+        - image
         - category
         - price
       properties:
@@ -572,6 +603,18 @@ components:
           description: Visible name of item
           type: string
           example: Pink helmet
+        place:
+          description: Where item is
+          type: string
+          example: Bialka Tatrzanska, PL
+        size:
+          description: Item size
+          type: string
+          example: M
+        image:
+          description: Path to image
+          type: string
+          example: "/Placeholder.png"
         category:
           description: Item category
           type: string
@@ -588,6 +631,14 @@ components:
         category:
           type: string
           example: Ski
+        place:
+          description: Where item is
+          type: string
+          example: Bialka Tatrzanska, PL
+        size:
+          description: Item size
+          type: string
+          example: M
         price:
           $ref: '#/components/schemas/Price'
     Request_AddMaintenance:
@@ -660,6 +711,9 @@ components:
       required:
         - id
         - name
+        - image
+        - place
+        - size
         - category
         - addDate
         - lastMaintenance
@@ -670,10 +724,21 @@ components:
           type: integer
           format: int64
           example: 21
+        image:
+          description: link fo image
+          type: string
         name:
           description: Item name
           type: string
           example: Pink helmet
+        place:
+          description: Where item is
+          type: string
+          example: Bialka Tatrzanska, PL
+        size:
+          description: Size of item
+          type: string
+          example: M
         category:
           description: Item category
           type: string
@@ -695,7 +760,9 @@ components:
       type: object
       required:
         - id
+        - itemName
         - itemId
+        - itemImage
         - type
         - date
         - note
@@ -705,11 +772,16 @@ components:
           format: int64
           description: Maintenance id
           example: 15
+        itemName:
+          type: string
+          description: Item name
+          example: Pink Helmet
         itemId:
           type: integer
           format: int64
-          description: Item id
-          example: 21
+          example: 7
+        itemImage:
+          type: string
         type:
           $ref: '#/components/schemas/MaintenanceTypeEnum'
         date:

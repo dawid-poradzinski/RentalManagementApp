@@ -40,7 +40,7 @@ function WorkerAddItem() {
     return (
         <div className="w-full h-full flex justify-center">
             <form onSubmit={handleSubmit} className="bg-white/7 w-[50%] rounded-xl p-6 shadow-xl backdrop-blur-lg">
-                <h1 className="text-white text-3xl text-center mb-4" onClick={() => navigate(-1)}>New Item</h1>
+                <h1 className="text-white text-3xl text-center mb-4">New Item</h1>
 
                 <label className="block text-white mb-2">Name</label>
                 <input className="w-full mb-4 p-2 border-3 border-black rounded-md focus:outline-none text-white" placeholder={name} onChange={e => setName(e.target.value)} />

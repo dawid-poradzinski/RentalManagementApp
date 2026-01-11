@@ -24,6 +24,8 @@ public class ItemMapper {
         item.setCategory(itemCategory);
         item.setPriceAmount(requestAddItem.getPrice().getPriceAmount());
         item.setPriceCurrency(requestAddItem.getPrice().getPriceCurrency());
+        item.setSize(requestAddItem.getSize());
+        item.setPlace(requestAddItem.getPlace());
 
         return item;
     }
@@ -34,10 +36,13 @@ public class ItemMapper {
         itemEntity.setAddDate(item.getAddDate());
         itemEntity.setCategory(item.getCategory().getCategory());
         itemEntity.setDamaged(item.getDamaged());
+        itemEntity.setImage(item.getImage());
         itemEntity.setId(item.getId());
         itemEntity.setLastMaintenance(item.getLastMaintenance());
         itemEntity.setName(item.getName());
         itemEntity.setPrice(new Price().priceAmount(item.getPriceAmount()).priceCurrency(item.getPriceCurrency()));
+        itemEntity.setSize(item.getSize());
+        itemEntity.setPlace(item.getPlace());
         
         return itemEntity;
     }

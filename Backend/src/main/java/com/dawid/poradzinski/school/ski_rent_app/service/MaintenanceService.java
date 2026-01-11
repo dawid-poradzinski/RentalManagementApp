@@ -51,7 +51,7 @@ public class MaintenanceService {
 
         return new ResponseGetSingleMaintenance()
                 .timestamp(OffsetDateTime.now())
-                .maintenance(maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance), itemId));
+                .maintenance(maintenanceMapper.mapMaintenanceToMaintenanceEntity(maintenanceRepository.save(maintenance)));
     }
 
     public ResponseGetMultipleMaintenances getMaintenancesForItem(Long itemId, GetMaintenancesParams params) {
