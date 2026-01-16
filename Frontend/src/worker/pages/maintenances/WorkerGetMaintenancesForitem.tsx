@@ -7,7 +7,7 @@ import FakeLoading from "../../../addons/Fake/FakeLoading";
 import FakeMaintenanceitem from "../../../addons/Fake/FakeMaintenanceItem";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
-import PaginationFooter from "../PaginationFooter";
+import PaginationFooter from "../../../addons/PaginationFooter";
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
 
 
@@ -181,7 +181,7 @@ function WorkerGetMaintenancesForItem() {
                 {loading === true ? (
                     <FakeLoadingFooter />
                 ) : (
-                    <PaginationFooter maxPage={maintenances?.pages.maxPage ?? 0} currentPage={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} />
+                    <PaginationFooter numberOfPages={maintenances?.pages.numberOfPages ?? 0} currentPage={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} />
                 )}
             </section>
         </div>

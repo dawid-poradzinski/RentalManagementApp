@@ -58,7 +58,7 @@ public class ItemMapper {
 
         pages.setCurrentPage(getItemsParams.getPage());
         pages.setCurrentSize(getItemsParams.getSize());
-        pages.setMaxPage(page.getTotalPages());
+        pages.setNumberOfPages(page.getTotalPages());
 
         return pages;
     }
@@ -68,7 +68,7 @@ public class ItemMapper {
 
         pages.setCurrentPage(getItemsParams.getPage());
         pages.setCurrentSize(getItemsParams.getSize());
-        pages.setMaxPage(page.getTotalPages());
+        pages.setNumberOfPages(page.getTotalPages());
 
         return pages;
     }

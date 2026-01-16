@@ -7,7 +7,7 @@ import FakeLoading from "../../../addons/Fake/FakeLoading";import ErrorMessage f
 import { ResponseErrorModelFromJSON, type ResponseErrorModel } from '../../../../generated-ts/models/ResponseErrorModel';
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
-import PaginationFooter from "../PaginationFooter";
+import PaginationFooter from "../../../addons/PaginationFooter";
 import ErrorHandle from "../../../addons/Error/ErrorHandle";
 
 
@@ -155,7 +155,7 @@ function WorkerGetMaintenances() {
                 {loading === true ? (
                     <FakeLoadingFooter />
                 ) : (
-                    <PaginationFooter maxPage={maintenances?.pages.maxPage ?? 0} currentPage={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} />
+                    <PaginationFooter numberOfPages={maintenances?.pages.numberOfPages ?? 0} currentPage={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} />
                 )}
             </section>
         </div>

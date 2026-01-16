@@ -11,6 +11,8 @@ tags:
     description: Operations related to item availability for rental
   - name: Rentals
     description: Operations related to rentals
+  - name: Categories
+    description: Operations related to categories
 servers:
   - url: http://localhost:8080
 paths:
@@ -488,6 +490,109 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/rentals:
+    get:
+      summary: Endpoint for getting rentals
+      tags:
+        - Rentals
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          required: false
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/RentalStatusTypeEnum'
+          required: false
+        - in: query
+          name: place
+          required: false
+          schema:
+            $ref: "#/components/schemas/PlacesEnum"
+      responses:
+        '200':
+          description: Call to server for rental was succesfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetMultipleRentals'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/rentals/{id}/close:
+    get:
+      summary: Endpoint for getting rentals
+      tags:
+        - Rentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Call to close rental was successfull
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/rentals/{id}:
+    get:
+      summary: Endpoint for getting rental
+      tags:
+        - Rentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rental retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_GetSingleRental'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/categories:
+    get:
+      tags:
+        - Categories
+      description: Endpoint for getting current categories
+      responses:
+        '200':
+          description: List of getting categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: ["ski", "helm", "gloves"]
 
 components:
   schemas:
@@ -569,7 +674,7 @@ components:
           description: CurrentSize
           type: integer
           example: 4
-        maxPage:
+        numberOfPages:
           description: Last page with info for current size
           type: integer
           example: 2
@@ -821,7 +926,69 @@ components:
         pesel:
           type: string
           format: pesel
-
+    SmallRentalEntity:
+      type: object
+      required:
+        - price
+        - id
+        - rentalDate
+        - rentalStatus
+        - placePlace
+      properties:
+        price:
+          $ref: '#/components/schemas/Price'
+        id:
+          type: integer
+          format: int64
+        rentalDate:
+          $ref: '#/components/schemas/RentalDate'
+        rentalStatus:
+          $ref: '#/components/schemas/RentalStatusTypeEnum'
+        rentalPlace:
+          $ref: '#/components/schemas/PlacesEnum'
+    FullRentalEntity:
+      type: object
+      required:
+        - rental
+        - items
+        - buyer
+      properties:
+        buyer:
+          $ref: "#/components/schemas/BuyerEntity"
+        rental:
+          $ref: '#/components/schemas/SmallRentalEntity'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemForRental'
+    ItemForRental:
+      type: object
+      required:
+        - item
+        - price
+      properties:
+        item:
+          $ref: '#/components/schemas/ItemMinimalInfo'
+        price:
+          $ref: '#/components/schemas/Price'
+    ItemMinimalInfo:
+      type: object
+      required:
+        - image
+        - id
+        - name
+      properties:
+        image:
+          type: string
+          example: "/Placeholder.png"
+        id:
+          type: integer
+          format: int64
+          example: 8
+        name:
+          type: string
+          example: Pink Helmet
+        
     Response_ErrorModel:
       description: Schema for error response
       required:
@@ -925,3 +1092,27 @@ components:
         ttl:
           type: string
           format: date-time
+    Response_GetMultipleRentals:
+      description: Response for getting multiple rentals
+      required:
+        - timestamp
+        - rentals
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        rentals:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmallRentalEntity'
+        pages:
+          $ref: '#/components/schemas/Pages'
+    Response_GetSingleRental:
+      description: Response for getting single full rental info
+      required:
+        - timestamp
+        - rental
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        rental:
+          $ref: '#/components/schemas/FullRentalEntity'

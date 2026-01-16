@@ -1,11 +1,11 @@
 import { IconCaretLeft, IconCaretRight } from "@tabler/icons-react"
 
-type Props = {currentPage: number, setPage: React.Dispatch<React.SetStateAction<number>>, pageSize: number, setPageSize: React.Dispatch<React.SetStateAction<number>>, maxPage: number}
+type Props = {currentPage: number, setPage: React.Dispatch<React.SetStateAction<number>>, pageSize: number, setPageSize: React.Dispatch<React.SetStateAction<number>>, numberOfPages: number}
 
 function PaginationFooter(props: Props) {
 
     function updatePage(num: number) {
-        const max = props.maxPage
+        const max = props.numberOfPages
 
         if (props.currentPage >= max) {
             props.setPage(max - 1)
@@ -36,7 +36,7 @@ function PaginationFooter(props: Props) {
                 <input type="number" value={props.currentPage+1} className="w-6 text-center" onInput={(e) => props.setPage(Number(e.currentTarget.value)-1)}>
                 </input>
                 <div className="flex items-center mx-2">
-                    of {props.maxPage}
+                    of {props.numberOfPages}
                 </div>
             </div>
             <div className="w-fit flex">

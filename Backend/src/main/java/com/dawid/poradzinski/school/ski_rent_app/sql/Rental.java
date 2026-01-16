@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.openapitools.model.PlacesEnum;
 import org.openapitools.model.RentalStatusTypeEnum;
 
 import jakarta.persistence.CascadeType;
@@ -49,12 +50,14 @@ public class Rental {
 
     private String paidCurrency;
 
+    @Enumerated(EnumType.STRING)
+    private PlacesEnum place;
     
     @Enumerated(EnumType.STRING)
     private RentalStatusTypeEnum status = RentalStatusTypeEnum.RESERVED;
 
     @JoinColumn(name = "buyer_id")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private BuyerEntity buyer;
 
     public void addItem(Item item) {
