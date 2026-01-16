@@ -41,7 +41,7 @@ public class MaintenanceMapper {
         Pages pages = new Pages();
         pages.setCurrentPage(params.getPage());
         pages.setCurrentSize(params.getSize());
-        pages.setMaxPage(page.getTotalPages());
+        pages.setNumberOfPages(page.getTotalPages());
 
         return pages;
     }

@@ -7,7 +7,7 @@ import { PlacesEnum, ResponseErrorModelFromJSON, SizeEnum, type ErrorModel, type
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
-import PaginationFooter from "../PaginationFooter";
+import PaginationFooter from "../../../addons/PaginationFooter";
 
 type Filter = {category: string | null, damaged: boolean | null, itemSize: SizeEnum | null, place: PlacesEnum | null}
 
@@ -196,7 +196,7 @@ function WorkerGetItems() {
                 {loading === true ? (
                     <FakeLoadingFooter />
                 ) : (
-                    <PaginationFooter maxPage={response?.pages.maxPage ?? 0} currentPage={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} />
+                    <PaginationFooter numberOfPages={response?.pages.numberOfPages ?? 0} currentPage={page} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} />
                 )}
             </section>
         </div>

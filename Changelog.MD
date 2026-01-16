@@ -1,4 +1,7 @@
-# CURRENT VERSION: 1.0
+# CURRENT VERSION: 1.1
+
+### [1.1]
+`Extended schema for retrieving data from rentals and closing them. Added field place for rental to database and updated backend to achieve this`
 
 ### [1.0]
 `Working add maintenance, add item, find items, get item, find maintenances, find maintenances for id, get maintenance. Filter list for items and maintenance find with pagination. Still need to create delete and update functions. Errors are working and loading screens. Worker works without any logging (not implemented yet). Renamed error models for clarification with tsx error generator`
