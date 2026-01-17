@@ -20,13 +20,7 @@ import com.dawid.poradzinski.school.ski_rent_app.sql.RentalItem;
 
 @Service
 public class RentalMapper {
-
-    private final BuyerEntityMapper buyerEntityMapper;
-
-    RentalMapper(BuyerEntityMapper buyerEntityMapper) {
-        this.buyerEntityMapper = buyerEntityMapper;
-    }
-
+    
     public SmallRentalEntity mapSqlRentalWithPriceToSmallRentalEntity(RentalWithPriceDto dto) {
         return new SmallRentalEntity()
             .id(dto.rental().getId())

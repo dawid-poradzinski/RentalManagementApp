@@ -472,6 +472,8 @@ paths:
       tags:
         - Availability
       description: Endpoint for item shop
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -595,6 +597,11 @@ paths:
                 example: ["ski", "helm", "gloves"]
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CurrentDate:
       description: Current date
@@ -707,7 +714,50 @@ components:
       - "Krakow, PL"
       - "Kranjska Gora, SI"
       - "Foppolo, IT"
+    RankEnum:
+      description: Enum for rank of person
+      enum:
+        - USER
+        - WORKER
+        - ADMIN
 
+    Request_Register:
+      type: object
+      required:
+        - login
+        - password
+        - name
+        - surname
+        - phone
+      properties:
+        login:
+          type: string
+          example: user123
+        password:
+          type: string
+          format: password
+          example: Abc123
+        name:
+          type: string
+          example: Tomek
+        surname:
+          type: string
+          example: Nowak
+        phone:
+          type: string
+    Request_Login:
+      type: object
+      required:
+        - loginOrPhone
+        - password
+      properties:
+        loginOrPhone:
+          type: string
+          example: User123
+        password:
+          type: string
+          format: password
+          example: Abc123
     Request_AddItem:
       description: Schema for adding new item
       type: object
@@ -802,7 +852,6 @@ components:
         - rental
         - items
         - paid
-        - buyer
       properties:
         token:
           type: string
@@ -819,6 +868,7 @@ components:
         paid:
           $ref: '#/components/schemas/Price'
         buyer:
+          description: Optional buyer info override for account
           $ref: '#/components/schemas/BuyerEntity'
 
     ItemEntity:
@@ -911,7 +961,7 @@ components:
         - name
         - surname
         - phone
-        - pesel
+        - personId
       properties:
         name:
           type: string
@@ -923,9 +973,9 @@ components:
           type: string
           format: phone
           example: 111222333
-        pesel:
-          type: string
-          format: pesel
+        personId:
+          type: integer
+          format: int64
     SmallRentalEntity:
       type: object
       required:
@@ -988,7 +1038,25 @@ components:
         name:
           type: string
           example: Pink Helmet
-        
+    PersonEntity:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 521
+        phone:
+          type: string
+          example: 555000123
+        name:
+          type: string
+          example: Tomek
+        surname:
+          type: string
+          example: Nowak
+        rank:
+          $ref: '#/components/schemas/RankEnum'
+    
     Response_ErrorModel:
       description: Schema for error response
       required:
@@ -1116,3 +1184,13 @@ components:
           $ref: '#/components/schemas/CurrentDate'
         rental:
           $ref: '#/components/schemas/FullRentalEntity'
+    Response_Auth:
+      type: object
+      required:
+        - timestamp
+        - jwt
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        jwt:
+          type: string
