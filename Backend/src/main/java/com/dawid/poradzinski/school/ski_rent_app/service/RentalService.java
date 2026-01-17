@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.openapitools.model.BuyerEntity;
 import org.openapitools.model.FullRentalEntity;
 import org.openapitools.model.PlacesEnum;
 import org.openapitools.model.RequestItemCheck;
@@ -25,9 +26,13 @@ import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.MultiplePlace
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.BuyerEntityMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.RentalMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetRentalsParams;
+import com.dawid.poradzinski.school.ski_rent_app.controller.UserContextService;
+import com.dawid.poradzinski.school.ski_rent_app.repository.BuyerRepository;
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
+import com.dawid.poradzinski.school.ski_rent_app.repository.PersonRepository;
 import com.dawid.poradzinski.school.ski_rent_app.repository.RentalRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
+import com.dawid.poradzinski.school.ski_rent_app.sql.Person;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Rental;
 import com.dawid.poradzinski.school.ski_rent_app.sql.RentalItem;
 
@@ -39,13 +44,19 @@ public class RentalService {
     private final RentalRepository rentalRepository;
     private final BuyerEntityMapper buyerEntityMapper;
     private final ItemRepository itemRepository;
+    private final UserContextService userContextService;
+    private final BuyerRepository buyerRepository;
+    private final PersonRepository personRepository;
 
-    RentalService(ItemCheckService itemCheckService, RentalRepository rentalRepository, BuyerEntityMapper buyerEntityMapper, ItemRepository itemRepository, RentalMapper rentalMapper) {
+    RentalService(ItemCheckService itemCheckService, RentalRepository rentalRepository, BuyerEntityMapper buyerEntityMapper, ItemRepository itemRepository, RentalMapper rentalMapper, UserContextService userContextService, BuyerRepository buyerRepository, PersonRepository personRepository) {
         this.itemCheckService = itemCheckService;
         this.rentalRepository = rentalRepository;
         this.buyerEntityMapper = buyerEntityMapper;
         this.itemRepository = itemRepository;
         this.rentalMapper = rentalMapper;
+        this.userContextService = userContextService;
+        this.buyerRepository = buyerRepository;
+        this.personRepository = personRepository;
     }
 
     private void validateDates(OffsetDateTime from, OffsetDateTime to) {
@@ -95,11 +106,25 @@ public class RentalService {
             rental.addItem(item);
         });
 
+        Long personId = userContextService.getCurrentPersonId();
+        Person person = personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Person not found"));
+        BuyerEntity buyerEntity = request.getBuyer();
+        if (buyerEntity == null) {
+            buyerEntity = buyerEntityMapper.mapPersonToBuyerEntity(person);
+        }
+        buyerEntity.setPersonId(personId);
+        var existingBuyerEntity = buyerRepository.findByPhoneAndNameAndSurnameAndPerson_Id(buyerEntity.getPhone(), buyerEntity.getName(), buyerEntity.getSurname(), buyerEntity.getPersonId());
+
+        if (existingBuyerEntity.isPresent()) {
+            rental.setBuyer(existingBuyerEntity.get());
+        } else {
+            rental.setBuyer(buyerEntityMapper.mapPersonToSqlBuyerEntity(person));
+        }
+
         rental.setPaidCurrency(request.getPaid().getPriceCurrency());
         rental.setPaidPrice(request.getPaid().getPriceAmount());
         rental.setRentalStart(request.getRental().getFrom());
         rental.setRentalEnd(request.getRental().getTo());
-        rental.setBuyer(buyerEntityMapper.mapEntityToSql(request.getBuyer()));
         rental.setPlace(places.iterator().next());
         
         var responseRental = rentalRepository.save(rental);
@@ -127,13 +152,11 @@ public class RentalService {
 
         List<RentalItem> items = rental.getItems();
 
-
-
         return new ResponseGetSingleRental()
             .timestamp(OffsetDateTime.now())
             .rental(new FullRentalEntity()
                 .rental(rentalMapper.mapSqlRentalWithPriceToSmalLRentalEntity(rental, items.stream().map(RentalItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add), items.getFirst().getCurrency()))
                 .items(rentalMapper.mapSqlRentalItemsToItemsForRental(items))
-                .buyer(buyerEntityMapper.mapSqlToEntity(rental.getBuyer())));
+                .buyer(buyerEntityMapper.mapSqlBuyerEntityToBuyerEntity(rental.getBuyer())));
     }
 }

@@ -1,4 +1,10 @@
-# CURRENT VERSION: 1.1
+# CURRENT VERSION: 1.3
+
+### [1.3]
+`Finished working on JWT token. Decided to stay with httponly cookies and not sending them via header. Added auth controller for register and login`
+
+### [1.2]
+`Started working on authorization and authentication. Backend seems to be working by my frontend because of SPA doesn't work. Will look for this later`
 
 ### [1.1]
 `Extended schema for retrieving data from rentals and closing them. Added field place for rental to database and updated backend to achieve this`

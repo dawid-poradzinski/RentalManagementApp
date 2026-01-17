@@ -1,4 +1,4 @@
-package com.dawid.poradzinski.school.ski_rent_app.addons.converters;
+package com.dawid.poradzinski.school.ski_rent_app.configs.converters;
 
 import org.openapitools.model.PlacesEnum;
 import org.springframework.core.convert.converter.Converter;
