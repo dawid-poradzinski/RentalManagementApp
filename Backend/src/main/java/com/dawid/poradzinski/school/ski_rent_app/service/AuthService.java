@@ -7,6 +7,7 @@ import org.openapitools.model.PersonEntity;
 import org.openapitools.model.RequestLogin;
 import org.openapitools.model.RequestRegister;
 import org.openapitools.model.ResponseAuth;
+import org.openapitools.model.ResponseAuthMe;
 import org.springframework.stereotype.Service;
 
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.UserNotFoundException;
@@ -17,6 +18,9 @@ import com.dawid.poradzinski.school.ski_rent_app.repository.PersonPrivateReposit
 import com.dawid.poradzinski.school.ski_rent_app.repository.PersonRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Person;
 import com.dawid.poradzinski.school.ski_rent_app.sql.PersonPrivate;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthService {
@@ -34,6 +38,22 @@ public class AuthService {
         this.personPrivateRepository = personPrivateRepository;
         this.encryptionService = encryptionService;
         this.JWTService = JWTService;
+    }
+
+    public ResponseAuthMe getPersonEntityByToken(HttpServletRequest request) {
+        String token = "";
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("jwt")) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+        var person = getPersonById(JWTService.getId(token)).orElseThrow(() -> new UserNotFoundException());
+
+        return new ResponseAuthMe()
+                .timestamp(OffsetDateTime.now())
+                .user(person);
     }
 
     public Optional<PersonEntity> getPersonById(Long id) {
@@ -80,5 +100,4 @@ public class AuthService {
             .jwt(JWTService.generateJWT(personMapper.mapSqlPeronToPersonEntity(optional.get())))
             .timestamp(OffsetDateTime.now());
     }
-
 }

@@ -1,10 +1,12 @@
 package com.dawid.poradzinski.school.ski_rent_app.configs.security;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
 import org.openapitools.model.PersonEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -49,8 +51,15 @@ public class JWTRequestFilter extends OncePerRequestFilter{
             try {
                 Long id = jwtService.getId(token);
                 Optional<PersonEntity> optional = authService.getPersonById(id);
-                if (optional.isPresent()) {
+                if (optional.isEmpty()) {
+                     throw new AccessDeniedException("User not found");
+                } else {
                     PersonEntity personEntity = optional.get();
+
+                    if (personEntity.getRank() == null) {
+                         throw new AccessDeniedException("User has no role"); 
+                    }
+                    
                     String rank = personEntity.getRank().name();
                     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + rank));
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(personEntity, null, authorities);
@@ -58,7 +67,7 @@ public class JWTRequestFilter extends OncePerRequestFilter{
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (JWTDecodeException e) {
-                throw new RuntimeException("Error reading cookie:Cookie readout finished in error");
+                throw new BadCredentialsException("Invalid JWT");
             }
         }
 

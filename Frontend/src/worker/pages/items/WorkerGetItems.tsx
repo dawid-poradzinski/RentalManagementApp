@@ -8,6 +8,7 @@ import ErrorMessage from "../../../addons/Error/ErrorMessage";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
 import PaginationFooter from "../../../addons/PaginationFooter";
+import { Configuration } from "../../../../generated-ts/runtime";
 
 type Filter = {category: string | null, damaged: boolean | null, itemSize: SizeEnum | null, place: PlacesEnum | null}
 
@@ -23,7 +24,9 @@ function WorkerGetItems() {
     useEffect(() => {
 
         async function getItems() {
-            const api = new ItemsApi()
+            const api = new ItemsApi(new Configuration({
+                credentials: "include"
+            }))
             const request: V1ApiItemsGetRequest = {
                 page: page,
                 size: pageSize,

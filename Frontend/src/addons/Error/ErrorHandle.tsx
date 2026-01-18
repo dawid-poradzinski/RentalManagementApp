@@ -2,8 +2,10 @@ import { ResponseErrorModelFromJSON, type ResponseErrorModel } from "../../../ge
 import DefaultErrorMessage from "./DefaultErrorMessage";
 
 async function ErrorHandle(err: any, setError: React.Dispatch<React.SetStateAction<ResponseErrorModel | null>>) {
+    console.log(err)
     let errorModel = null
     if(err.response && typeof err.response?.json === "function") {
+        console.log(err.response)
         errorModel = ResponseErrorModelFromJSON(await err.response.json())
     } else {
         errorModel = {

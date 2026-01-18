@@ -2,9 +2,13 @@ package com.dawid.poradzinski.school.ski_rent_app.controller;
 
 import com.dawid.poradzinski.school.ski_rent_app.service.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.openapitools.model.PersonEntity;
 import org.openapitools.model.RequestLogin;
 import org.openapitools.model.RequestRegister;
 import org.openapitools.model.ResponseAuth;
+import org.openapitools.model.ResponseAuthMe;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -50,4 +57,22 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
     
+    @GetMapping("/me")
+    public ResponseEntity<ResponseAuthMe> getPersonEntityFromJwt(HttpServletRequest request) {
+        return ResponseEntity.ok(authService.getPersonEntityByToken(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")
+            .path("/")
+            .maxAge(1)
+            .build();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+    }
 }
