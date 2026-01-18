@@ -9,6 +9,7 @@ import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
 import PaginationFooter from "../../../addons/PaginationFooter";
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
+import { Configuration } from "../../../../generated-ts/runtime";
 
 
 type Filter = {types: MaintenanceTypeEnum[], from: Date | null, to: Date | null}
@@ -35,7 +36,9 @@ function WorkerGetMaintenancesForItem() {
                 }
                 setError(error);
             } else {
-                const api = new MaintenancesApi()
+                const api = new MaintenancesApi(new Configuration({
+                    credentials: "include"
+                }))
                 const request: V1ApiItemsIdMaintenancesGetRequest = {
                     page: page,
                     size: pageSize,

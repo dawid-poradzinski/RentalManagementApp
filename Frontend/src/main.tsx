@@ -13,6 +13,11 @@ import WorkerGetMaintenance from './worker/pages/maintenances/WorkerGetMaintenan
 import WorkerGetMaintenances from './worker/pages/maintenances/WorkerGetMaintenances.tsx';
 import WorkerGetItems from './worker/pages/items/WorkerGetItems.tsx';
 import WorkerAddMaintenance from './worker/pages/maintenances/WorkerAddMaintenance.tsx';
+import AuthWebsite from './auth/AuthWebsite.tsx';
+import AuthLogin from './auth/AuthLogin.tsx';
+import AuthRegister from './auth/AuthRegister.tsx';
+import AuthProvider from './auth/AuthContext.tsx';
+import ProtectedRoute from './auth/ProtectedRoute.tsx';
 
 const router = createBrowserRouter([
   {
@@ -20,11 +25,30 @@ const router = createBrowserRouter([
     Component: App,
     children: [
       {
+        path: "auth",
+        Component: AuthWebsite,
+        children: [
+          {
+            index: true,
+            path: "login",
+            Component: AuthLogin
+          },
+          {
+            path: "register",
+            Component: AuthRegister
+          }
+        ]
+      },
+      {
         path: "worker",
         children: [
           {
             index: true,
-            Component: WorkerMainMenu,
+            Component: () => (
+              <ProtectedRoute ranks={["WORKER", "ADMIN"]}>
+                <WorkerMainMenu />
+              </ProtectedRoute>
+            )
           },
           {
             path: "items",
@@ -85,5 +109,7 @@ const router = createBrowserRouter([
 const root = document.getElementById("root")!;
 
 ReactDOM.createRoot(root).render(
-  <RouterProvider router={router} />
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
 )

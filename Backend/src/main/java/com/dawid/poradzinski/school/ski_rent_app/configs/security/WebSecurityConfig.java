@@ -24,12 +24,15 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomAccessDeniedHandler customAccessDeniedHandler, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .addFilterBefore(jwtRequestFilter, AuthorizationFilter.class)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(ex -> ex
+                .accessDeniedHandler(customAccessDeniedHandler)
+                .authenticationEntryPoint(customAuthenticationEntryPoint))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/v1/api/register",
@@ -37,6 +40,7 @@ public class WebSecurityConfig {
                     "/v1/api/items/itemRefresh",
                     "/v1/api/rental/itemCheck",
                     "/swagger-ui/**",
+                    "/swagger-ui/index.html",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
                     "/webjars/**"

@@ -6,6 +6,7 @@ import FakeLoadingAddMaintenance from "../../../addons/Fake/FakeLoadingAddMainte
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
 import { ItemsApi, type V1ApiItemsIdGetRequest } from "../../../../generated-ts/apis/ItemsApi";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
+import { Configuration } from "../../../../generated-ts/runtime";
 
 function WorkerAddMaintenance() {
     const { id } = useParams();
@@ -26,7 +27,9 @@ function WorkerAddMaintenance() {
                 const request: V1ApiItemsIdGetRequest = {
                     id: numId
                 }
-                const api = new ItemsApi()
+                const api = new ItemsApi(new Configuration({
+                    credentials: "include"
+                }))
 
                 try {
                     setItem(await api.v1ApiItemsIdGet(request))

@@ -5,6 +5,7 @@ import ItemFullRender from "../../addons/Renders/ItemFullRender";
 import { ResponseErrorModelFromJSON, type ResponseErrorModel, type ResponseGetSingleItem } from "../../../../generated-ts/models";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
+import { Configuration } from "../../../../generated-ts/runtime";
 
 function WorkerGetItem() {
     const { id } = useParams();
@@ -22,7 +23,9 @@ function WorkerGetItem() {
                 }
                 setError(error);
             } else {
-                const api = new ItemsApi();
+                const api = new ItemsApi(new Configuration({
+                    credentials: "include"
+                }));
                 const request: V1ApiItemsIdGetRequest = {
                     id: numId
                 };

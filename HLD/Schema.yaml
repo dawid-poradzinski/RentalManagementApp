@@ -13,6 +13,8 @@ tags:
     description: Operations related to rentals
   - name: Categories
     description: Operations related to categories
+  - name: Auth
+    description: Operatiosn related to authorization
 servers:
   - url: http://localhost:8080
 paths:
@@ -595,6 +597,54 @@ paths:
                 items:
                   type: string
                 example: ["ski", "helm", "gloves"]
+  /v1/api/login:
+    post:
+      tags:
+        - Auth
+      description: Endpoint for login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_Login'
+      responses:
+        '200':
+          description: Logged successfully
+  /v1/api/register:
+    post:
+      tags:
+        - Auth
+      description: Endpoint for register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_Register'
+      responses:
+        '200':
+          description: Logged successfully
+  /v1/api/me:
+    get:
+      tags:
+        - Auth
+      summary: Get jwt token info
+      responses:
+        '200':
+          description: JWT read successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_AuthMe'
+  /v1/api/logout:
+    post:
+      tags:
+        - Auth
+      summary: Endpoint for logging out (not possible to modify httponly cookie otherwise)
+      responses:
+        '200':
+          description: Logged successfully
 
 components:
   securitySchemes:
@@ -1194,3 +1244,13 @@ components:
           $ref: '#/components/schemas/CurrentDate'
         jwt:
           type: string
+    Response_AuthMe:
+      type: object
+      required:
+        - timestamp
+        - user
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/CurrentDate'
+        user:
+          $ref: '#/components/schemas/PersonEntity'

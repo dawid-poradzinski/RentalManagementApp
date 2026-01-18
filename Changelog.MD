@@ -1,4 +1,7 @@
-# CURRENT VERSION: 1.3
+# CURRENT VERSION: 1.4
+
+### [1.4]
+`Added backend enpoints for login, register, logout and authentication. Updated error handling for them. Added user context and started monitoring paths for specific ranks. Changed all apis to use httponly coockies`
 
 ### [1.3]
 `Finished working on JWT token. Decided to stay with httponly cookies and not sending them via header. Added auth controller for register and login`

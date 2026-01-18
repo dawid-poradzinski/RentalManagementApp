@@ -9,6 +9,7 @@ import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
 import PaginationFooter from "../../../addons/PaginationFooter";
 import ErrorHandle from "../../../addons/Error/ErrorHandle";
+import { Configuration } from "../../../../generated-ts/runtime";
 
 
 type Filter = {types: MaintenanceTypeEnum[], from: Date | null, to: Date | null}
@@ -24,7 +25,9 @@ function WorkerGetMaintenances() {
     
     useEffect(() => {
         async function getMaintenances() {
-            const api = new MaintenancesApi()
+            const api = new MaintenancesApi(new Configuration({
+                credentials: "include"
+            }))
             const request: V1ApiMaintenancesGetRequest = {
                 page: page,
                 size: pageSize,
@@ -56,7 +59,6 @@ function WorkerGetMaintenances() {
 
         if (typeof from === "string" && from.trim() !== "") {
             fromDate = new Date(from);
-            console.log(fromDate)
         }
 
         const to = formData.get("to")

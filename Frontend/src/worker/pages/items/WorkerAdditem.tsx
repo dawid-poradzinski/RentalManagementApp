@@ -6,6 +6,7 @@ import ErrorMessage from "../../../addons/Error/ErrorMessage";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import { PlacesEnum, SizeEnum, type ErrorModel, type ResponseErrorModel } from "../../../../generated-ts/models";
 import ErrorHandle from "../../../addons/Error/ErrorHandle";
+import { Configuration } from "../../../../generated-ts/runtime";
 
 function WorkerAddItem() {
     const [loading, setLoading] = useState(false);
@@ -85,7 +86,9 @@ function WorkerAddItem() {
             size: size
         };
 
-        const api = new ItemsApi();
+        const api = new ItemsApi(new Configuration({
+            credentials: "include"
+        }));
 
         try {
             const response = await api.v1ApiItemsPost({ requestAddItem: body });

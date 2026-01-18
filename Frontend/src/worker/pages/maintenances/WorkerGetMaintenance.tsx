@@ -5,6 +5,8 @@ import MaintenanceFullRender from "../../addons/Renders/MaintenanceFullRender";
 import { ResponseErrorModelFromJSON, type ResponseErrorModel, type ResponseGetSingleMaintenance } from "../../../../generated-ts/models";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
+import { Configuration } from "../../../../generated-ts/runtime";
+import ErrorHandle from "../../../addons/Error/ErrorHandle";
 
 function WorkerGetMaintenance() {
 
@@ -20,11 +22,12 @@ function WorkerGetMaintenance() {
                 const error : ResponseErrorModel = {
                     timestamp: new Date(),
                     errors: [DefaultErrorMessage("Id not a possitive number", "id must be a number and be positive")]
-
                 }
                 setError(error);
             } else {
-                const api = new MaintenancesApi()
+                const api = new MaintenancesApi(new Configuration({
+                    credentials: "include"
+                }))
                 const request: V1ApiMaintenancesIdGetRequest = {
                     id: numId,
                 }
@@ -33,16 +36,7 @@ function WorkerGetMaintenance() {
                     const response = await api.v1ApiMaintenancesIdGet(request)
                     setMaintenances(response)
                 } catch (err: any) {
-                    let errorModel = null
-                    if(err.response && typeof err.response?.json === "function") {
-                        errorModel = ResponseErrorModelFromJSON(await err.response.json())
-                    } else {
-                        errorModel = {
-                            timestamp: new Date(),
-                            errors: [DefaultErrorMessage(err.category, err.response)]
-                        }
-                    }
-                    setError(errorModel)
+                    await ErrorHandle(err, setError)
                 }
             }
         }
