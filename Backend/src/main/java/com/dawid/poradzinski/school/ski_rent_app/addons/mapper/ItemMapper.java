@@ -1,5 +1,6 @@
 package com.dawid.poradzinski.school.ski_rent_app.addons.mapper;
 
+import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class ItemMapper {
 
         item.setName(requestAddItem.getName());
         item.setCategory(itemCategory);
-        item.setPriceAmount(requestAddItem.getPrice().getPriceAmount());
+        item.setPriceAmount(requestAddItem.getPrice().getPriceAmount().setScale(2, RoundingMode.HALF_UP));
         item.setPriceCurrency(requestAddItem.getPrice().getPriceCurrency());
         item.setSize(requestAddItem.getSize());
         item.setPlace(requestAddItem.getPlace());
@@ -42,7 +43,7 @@ public class ItemMapper {
         itemEntity.setId(item.getId());
         itemEntity.setLastMaintenance(item.getLastMaintenance());
         itemEntity.setName(item.getName());
-        itemEntity.setPrice(new Price().priceAmount(item.getPriceAmount()).priceCurrency(item.getPriceCurrency()));
+        itemEntity.setPrice(new Price().priceAmount(item.getPriceAmount().setScale(2, RoundingMode.HALF_UP)).priceCurrency(item.getPriceCurrency()));
         itemEntity.setSize(item.getSize());
         itemEntity.setPlace(item.getPlace());
         

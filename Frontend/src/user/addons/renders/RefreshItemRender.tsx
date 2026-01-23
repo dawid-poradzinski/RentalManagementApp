@@ -19,20 +19,20 @@ function RefreshItemRender(props: Props) {
             removeFromKoszyk(props.item.id)
             setSelected(false)
         } else {
-            addToKoszyk({id: props.item.id, image: props.item.image, name: props.item.name, price: props.item.price})
+            addToKoszyk({id: props.item.id, image: props.item.image, name: props.item.name, price: props.item.price, size: props.item.size})
             setSelected(true)
         }
     }
 
     return(
-        <div onClick={select} className="group relative w-full h-full flex shadow-xl rounded-xl bg-white/30 backdrop-blur-xl flex flex-col cursor-pointer transition-transform transform hover:-translate-y-1 border border-white">
+        <div onClick={select} className="group relative w-full h-full flex shadow-xl rounded-xl bg-[url(/Background.png)] backdrop-blur-xl flex flex-col cursor-pointer transition-transform transform hover:-translate-y-1 border border-white overflow-hidden">
             <div className={"absolute right-2 top-2 rounded-xl w-5 h-5 border " + (selected ? "bg-sky-500 group-hover:bg-transparent" : "group-hover:bg-sky-500 ")}>
                 
             </div>
-            <div className="w-fit h-fit bg-[url(/Background.png)] w-full h-full flex justify-center py-4 rounded-t-xl">
+            <div className="w-fit h-fit w-full h-full flex justify-center py-4 rounded-t-xl">
                 <img src={props.item.image} className="h-32"></img>
             </div>
-            <div className="p-2 flex flex-col gap-2">
+            <div className="p-2 flex flex-col gap-2 bg-linear-to-b from-white/85 to-white/50">
                 <div className="text-center font-bold">
                     {props.item.name}
                 </div>
@@ -44,11 +44,11 @@ function RefreshItemRender(props: Props) {
                         {props.item.price?.priceAmount} {props.item.price?.priceCurrency}
                     </span>
                 </div>
-                <div className="bg-white rounded-xl shadow-xl backdrop-blur-xl p-1 flex">
-                    <div className="w-1/2 border-r text-center">
+                <div className="bg-white w-5/6 mx-auto rounded-xl shadow-xl backdrop-blur-xl p-1 flex">
+                    <div className="w-full border-r text-center">
                         {props.item.place}
                     </div>
-                    <div className="w-1/2 text-center">
+                    <div className="w-fit px-4 text-center flex items-center">
                         {props.item.size}
                     </div>
                 </div>

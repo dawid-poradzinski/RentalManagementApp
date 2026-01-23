@@ -24,6 +24,7 @@ import WelcomeWebsite from './user/WelcomeWebsite.tsx';
 import ItemRefresh from './user/ShopFlow/ItemRefresh.tsx';
 import ShopProvider from './user/ShopContext.tsx';
 import ItemCheck from './user/ShopFlow/ItemCheck.tsx';
+import ItemCheckResult from './user/ShopFlow/ItemCheckResult.tsx';
 
 const router = createBrowserRouter([
   {
@@ -40,7 +41,16 @@ const router = createBrowserRouter([
       },
       {
         path: "check",
-        Component: ItemCheck
+        children: [
+          {
+            index: true,
+            Component: ItemCheck
+          },
+          {
+            path: "result",
+            Component: ItemCheckResult
+          }
+        ]
       },
       {
         path: "auth",

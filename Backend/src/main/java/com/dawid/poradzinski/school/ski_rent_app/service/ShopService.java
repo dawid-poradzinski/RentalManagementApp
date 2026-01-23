@@ -1,6 +1,7 @@
 package com.dawid.poradzinski.school.ski_rent_app.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -71,7 +72,7 @@ public class ShopService {
         double minutes = Duration.between(from, to).toMinutes();
         double numberOfHalfOfHours  = Math.ceil(minutes / 30L);
         double discount = numberOfHalfOfHours < 8 ? 1 : numberOfHalfOfHours < 24 ? 0.45 : 0.15;
-        return BigDecimal.valueOf(numberOfHalfOfHours*discount);
+        return BigDecimal.valueOf(numberOfHalfOfHours*discount).setScale(2, RoundingMode.HALF_UP);
     }
 
     public ResponseGetMultipleItems getItemRefresh(GetItemRefreshParams params) {
