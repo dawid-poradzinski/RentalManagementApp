@@ -29,6 +29,6 @@ public class BuyerEntityMapper {
                 .name(buyerEntity.getName())
                 .personId(buyerEntity.getPerson().getId())
                 .phone(buyerEntity.getPhone())
-                .surname(buyerEntity.getPhone());
+                .surname(buyerEntity.getSurname());
     }
 }

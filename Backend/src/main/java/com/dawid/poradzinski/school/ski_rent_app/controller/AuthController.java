@@ -4,7 +4,6 @@ import com.dawid.poradzinski.school.ski_rent_app.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.openapitools.model.PersonEntity;
 import org.openapitools.model.RequestLogin;
 import org.openapitools.model.RequestRegister;
 import org.openapitools.model.ResponseAuth;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 

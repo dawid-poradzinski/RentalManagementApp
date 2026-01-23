@@ -5,11 +5,11 @@ type Props = {maintenance : MaintenanceEntity}
 
 function colorType(type: MaintenanceTypeEnum) {
     if (type === MaintenanceTypeEnum.Damage) {
-        return <div className="bg-red-700 rounded-xl shadow-md backdrop-blue-lg py-1 px-3">{type}</div>
+        return <div className="bg-red-700 rounded-xl shadow-md py-1 px-3">{type}</div>
     } else if (type === MaintenanceTypeEnum.Info) {
-        return <div className="bg-blue-700 rounded-xl shadow-md backdrop-blue-lg py-1 px-3">{type}</div>
+        return <div className="bg-blue-700 rounded-xl shadow-md py-1 px-3">{type}</div>
     } else {
-        return <div className="bg-amber-300 rounded-xl shadow-md backdrop-blue-lg py-1 px-3">{type}</div>
+        return <div className="bg-amber-300 rounded-xl shadow-md py-1 px-3">{type}</div>
     }
 }
 

@@ -25,7 +25,6 @@ function AuthProvider( {children} : { children: React.ReactNode }) {
     async function refreshUser() {
         try {
             const me = await api.v1ApiMeGet()
-            console.log(me)
             setUser(me.user)
         } catch {
             setUser(null)

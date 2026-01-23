@@ -1,4 +1,5 @@
 package com.dawid.poradzinski.school.ski_rent_app.service;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ItemCheckService {
     }
 
     // return list of valid and not valid
-    public ResponseItemCheck itemCheck(List<Long> ids, CacheEntity cacheEntity) {
+    public ResponseItemCheck itemCheck(List<Long> ids, CacheEntity cacheEntity, BigDecimal priceModifier) {
 
         // if no timeCollide for id, then return nothing
         HashMap<Long, CacheEntity> itemsWithCacheConflict = findTimeCollideInCache(ids, cacheEntity.from(), cacheEntity.to());
@@ -81,6 +82,7 @@ public class ItemCheckService {
         List<Item> notValidItems = new ArrayList<>();
         
         itemRepository.findAllById(ids).forEach(item -> {
+            item.setPriceAmount(item.getPriceAmount().multiply(priceModifier));
             if (valid.contains(item.getId())) {
                 validItems.add(item);
             } else {

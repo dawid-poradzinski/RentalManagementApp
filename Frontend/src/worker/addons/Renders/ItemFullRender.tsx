@@ -72,13 +72,13 @@ export default function ItemFullRender(props: Props) {
                     </div>
                 <div className="w-full h-full bg-slate-50/20 rounded-xl shadow-xl backdrop-blur-lg p-4">
                     <div className="w-full xl:min-h-20 flex gap-5 items-center justify-center">
-                        <div className="bg-rose-600 w-1/3 p-4 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
+                        <div className="bg-linear-to-bl from-rose-500 to-red-700 w-1/3 p-4 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
                             Delete
                         </div>
-                        <div className="bg-amber-200 w-1/3 p-4 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
+                        <div className="bg-linear-to-bl from-amber-200 to-yellow-300 w-1/3 p-4 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
                             Modify item
                         </div>
-                        <Link to={"maintenances/add"} className="bg-purple-400 w-1/3 p-4 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
+                        <Link to={"maintenances/add"} className="bg-linear-to-bl from-purple-400 to-violet-500 w-1/3 p-4 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
                             Add maintenance
                         </Link>
                     </div>

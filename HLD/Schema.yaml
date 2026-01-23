@@ -525,6 +525,21 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/PlacesEnum"
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: surname
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: phone
+          schema:
+            type: string
+          required: false
       responses:
         '200':
           description: Call to server for rental was succesfull
@@ -934,6 +949,7 @@ components:
         - addDate
         - lastMaintenance
         - damaged
+        - price
       properties:
         id:
           description: Item id
@@ -1029,13 +1045,16 @@ components:
     SmallRentalEntity:
       type: object
       required:
-        - price
+        - paidPrice
+        - totalPrice
         - id
         - rentalDate
         - rentalStatus
-        - placePlace
+        - rentalPlace
       properties:
-        price:
+        paidPrice:
+          $ref: '#/components/schemas/Price'
+        totalPrice:
           $ref: '#/components/schemas/Price'
         id:
           type: integer
@@ -1215,6 +1234,7 @@ components:
       required:
         - timestamp
         - rentals
+        - pages
       properties:
         timestamp:
           $ref: '#/components/schemas/CurrentDate'

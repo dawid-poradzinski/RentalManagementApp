@@ -3,12 +3,12 @@ import { ItemsApi, type V1ApiItemsGetRequest } from '../../../../generated-ts/ap
 import ItemSmallRender from "../../addons/Renders/ItemSmallRender";
 import FakeLoading from "../../../addons/Fake/FakeLoading";
 import FakeLoadingItem from "../../../addons/Fake/FakeLoadingItem";
-import { PlacesEnum, ResponseErrorModelFromJSON, SizeEnum, type ErrorModel, type ResponseErrorModel, type ResponseGetMultipleItems } from "../../../../generated-ts/models";
+import { PlacesEnum, SizeEnum, type ResponseErrorModel, type ResponseGetMultipleItems } from "../../../../generated-ts/models";
 import ErrorMessage from "../../../addons/Error/ErrorMessage";
-import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import FakeLoadingFooter from "../../../addons/Fake/FakeLoadingFooter";
 import PaginationFooter from "../../../addons/PaginationFooter";
 import { Configuration } from "../../../../generated-ts/runtime";
+import ErrorHandle from "../../../addons/Error/ErrorHandle";
 
 type Filter = {category: string | null, damaged: boolean | null, itemSize: SizeEnum | null, place: PlacesEnum | null}
 
@@ -39,17 +39,7 @@ function WorkerGetItems() {
             try {
                 setResponse(await api.v1ApiItemsGet(request))
             } catch (err: any) {
-
-                let errorModel = null
-                if(err.response && typeof err.response?.json === "function") {
-                    errorModel = ResponseErrorModelFromJSON(await err.response.json())
-                } else {
-                    errorModel = {
-                        timestamp: new Date(),
-                        errors: [DefaultErrorMessage(err.category, err.response)]
-                    }
-                }
-                setError(errorModel)
+                ErrorHandle(err, setError)
             }
             setLoading(false)
         }
