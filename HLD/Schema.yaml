@@ -429,7 +429,7 @@ paths:
             $ref: "#/components/schemas/SizeEnum"
         - in: query
           name: place
-          required: false
+          required: true
           schema:
             $ref: "#/components/schemas/PlacesEnum"
       responses:

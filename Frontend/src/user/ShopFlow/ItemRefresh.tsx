@@ -9,17 +9,18 @@ import { AvailabilityApi, type V1ApiShopItemRefreshGetRequest } from '../../../g
 import { Configuration } from "../../../generated-ts/runtime";
 import ErrorHandle from "../../addons/Error/ErrorHandle";
 import RefreshItemRender from "../addons/renders/RefreshItemRender";
-import { ShopContext } from "../ShopContext";
+import { ShopContext, type ShopInfo } from "../ShopContext";
 
-type Filter = {category: string | null, itemSize: SizeEnum | null, place: PlacesEnum | null, dates: RentalDate}
+type Filter = {category: string | null, itemSize: SizeEnum | null, place: PlacesEnum, dates: RentalDate}
 
 function ItemRefresh() {
 
-    const {koszyk, initDate} = useContext(ShopContext)
+    const { shopInfo, updateShopInfo} = useContext(ShopContext)
     const [response, setResponse] = useState<ResponseGetMultipleItems | null>(null)
-    const [from, setFrom] = useState<string>(calculateTime(2))
-    const [to, setTo] = useState<string>(calculateTime(5))
-    const [filter, setFilter] = useState<Filter>({dates: {from: new Date(from), to: new Date(to)}, category: null, itemSize: null, place: null})
+    const [filter, setFilter] = useState<Filter>({dates: shopInfo?.date ? shopInfo.date :{
+        from: new Date(calculateTime(2)),
+        to: new Date(calculateTime(6))
+    }, category: null, itemSize: null, place: shopInfo?.place ? shopInfo.place : PlacesEnum.FoppoloIt})
     const [error, setError] = useState<ResponseErrorModel | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(0)
@@ -37,15 +38,25 @@ function ItemRefresh() {
                 size: pageSize,
                 from: new Date(filter.dates.from),
                 to: new Date(filter.dates.to),
+                place: filter.place,
                 ...(filter?.category ? {category: filter.category} : {} ),
                 ...(filter?.itemSize ? {itemSize: filter.itemSize} : {} ),
-                ...(filter?.place ? {place: filter.place} : {} ),
             }
-            console.log(request)
-
             try {
-                setResponse(await api.v1ApiShopItemRefreshGet(request))
-                initDate({from: new Date(from), to: new Date(to)})
+                const response = await api.v1ApiShopItemRefreshGet(request)
+                setResponse(response)
+                const newShopInfo: ShopInfo = {
+                    date: {
+                        from: request.from,
+                        to: request.to
+                    },
+                    place: request.place,
+                    token: shopInfo?.token
+                }
+                updateShopInfo(newShopInfo)
+                if(response!.pages!.currentPage! >= response!.pages!.numberOfPages!) {
+                    setPage(response.pages.numberOfPages!)
+                }
             } catch (err: any) {
                 ErrorHandle(err, setError)
             }
@@ -69,14 +80,16 @@ function ItemRefresh() {
 
         itemSize = formData.get("itemSize") as SizeEnum
         place = formData.get("place") as PlacesEnum
+        const fromForm = formData.get("from") as string
+        const toForm = formData.get("to") as string
 
         const newFilter: Filter = {
             category: category,
             itemSize: itemSize,
             place: place,
             dates: {
-                from: new Date(from),
-                to: new Date(to)
+                from: new Date(fromForm),
+                to: new Date(toForm)
             }
         }
 
@@ -92,7 +105,7 @@ function ItemRefresh() {
         return roundTime(now + oneHour * hoursToAdd)
     }
 
-    function roundTime(dateNumber: string | number): string {
+    function roundTime(dateNumber: string | number | Date): string {
         const date = new Date(dateNumber)
         const minutes = date.getMinutes();
         const roundedMinutes = minutes < 15 ? 0 : minutes < 45 ? 30 : 0;
@@ -118,16 +131,16 @@ function ItemRefresh() {
                         <div className="w-full flex flex-col gap-3">
                             <div className="w-full">
                                 <label className="block text-sm font-medium mb-2">From</label>
-                                <input type="datetime-local" value={from} onInput={ (e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setFrom(roundTime(e.target.value))
+                                <input name="from" type="datetime-local" defaultValue={roundTime(filter.dates.from)} onInput={ (e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.value = roundTime(e.target.value)
                                 }}  className="w-full bg-gray-700 text-white rounded-lg p-2 border border-gray-600"></input>
                             </div>
                         </div>
                         <div className="w-full flex flex-col gap-3">
                             <div className="w-full">
                                 <label className="block text-sm font-medium mb-2">To</label>
-                                <input type="datetime-local" value={to} onInput={ (e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setTo(roundTime(e.target.value))
+                                <input name="to" type="datetime-local" defaultValue={roundTime(filter.dates.to)} onInput={ (e: React.ChangeEvent<HTMLInputElement>) => {
+                                    e.target.value = roundTime(e.target.value)
                                 }} className="w-full bg-gray-700 text-white rounded-lg p-2 border border-gray-600"></input>
                             </div>
                         </div>
@@ -136,10 +149,7 @@ function ItemRefresh() {
                                 <label className="block text-sm font-medium mb-2">Places</label>
                                 <select
                                     className="w-full bg-gray-700 text-white rounded-lg p-2 border border-gray-600"
-                                    name="place">
-                                        <option key='empty' value={""}>
-                                            -
-                                        </option>
+                                    name="place" defaultValue={shopInfo?.place ? shopInfo.place : PlacesEnum.FoppoloIt}>
                                         {Object.values(PlacesEnum).map((value) => (
                                             <option key={value} value={value}>
                                                 {value}
@@ -178,7 +188,7 @@ function ItemRefresh() {
                             </div>
                         </div>
                         <div className="w-full flex justify-center">
-                            <button type="submit" className="bg-indigo-700 rounded-xl p-4 py-3 w-[80%] text-white text-center cursor-pointer lg:mb-4">
+                            <button type="submit" className="bg-linear-to-bl from-sky-600 to-indigo-700 rounded-xl p-4 py-3 w-[80%] text-white text-center cursor-pointer lg:mb-4">
                                 Search
                             </button>
                         </div>
