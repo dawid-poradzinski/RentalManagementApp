@@ -25,13 +25,20 @@ public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecif
         )
         FROM Rental r
         LEFT JOIN r.items ri
+        LEFT JOIN r.buyer rb
         WHERE (:place IS NULL OR r.place = :place)
             AND (:status IS NULL OR r.status = :status)
+            AND (:name IS NULL OR rb.name = :name)
+            AND (:surname IS NULL OR rb.surname = :surname)
+            AND (:phone IS NULL OR rb.phone = :phone)
         GROUP BY r
     """)
     Page<RentalWithPriceDto> findRentalsWithTotalPrice(
         @Param("place") PlacesEnum place,
         @Param("status") RentalStatusTypeEnum status,
+        @Param("name") String name,
+        @Param("surname") String surname,
+        @Param("phone") String phone,
         Pageable pageable
     );
 

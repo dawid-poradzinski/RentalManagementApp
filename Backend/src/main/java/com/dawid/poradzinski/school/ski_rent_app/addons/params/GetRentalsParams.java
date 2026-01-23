@@ -11,4 +11,7 @@ import lombok.Setter;
 public class GetRentalsParams extends PaginationParams{
     PlacesEnum place;
     RentalStatusTypeEnum status;
+    String name;
+    String surname;
+    String phone;
 }

@@ -1,17 +1,17 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MaintenancesApi, type V1ApiMaintenancesIdGetRequest } from "../../../../generated-ts/apis/MaintenancesApi";
-import MaintenanceFullRender from "../../addons/Renders/MaintenanceFullRender";
-import { ResponseErrorModelFromJSON, type ResponseErrorModel, type ResponseGetSingleMaintenance } from "../../../../generated-ts/models";
+import { useParams } from "react-router-dom";
+import type { ResponseErrorModel, ResponseGetSingleRental } from "../../../../generated-ts/models";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
-import ErrorMessage from "../../../addons/Error/ErrorMessage";
+import { RentalsApi, type V1ApiRentalsIdGetRequest } from "../../../../generated-ts/apis/RentalsApi";
 import { Configuration } from "../../../../generated-ts/runtime";
 import ErrorHandle from "../../../addons/Error/ErrorHandle";
+import ErrorMessage from "../../../addons/Error/ErrorMessage";
+import RentalFullRender from "../../addons/Renders/RentalFullRender";
 
-function WorkerGetMaintenance() {
-
+function WorkerGetRental() {
+    
     const { id } = useParams();
-    const [maintenance, setMaintenance] = useState<ResponseGetSingleMaintenance | null>(null)
+    const [rental, setMaintenances] = useState<ResponseGetSingleRental | null>(null)
     const [error, setError] = useState<ResponseErrorModel | null>(null);
 
     useEffect(() => {
@@ -25,16 +25,16 @@ function WorkerGetMaintenance() {
                 }
                 setError(error);
             } else {
-                const api = new MaintenancesApi(new Configuration({
+                const api = new RentalsApi(new Configuration({
                     credentials: "include"
                 }))
-                const request: V1ApiMaintenancesIdGetRequest = {
+                const request: V1ApiRentalsIdGetRequest = {
                     id: numId,
                 }
                 
                 try {
-                    const response = await api.v1ApiMaintenancesIdGet(request)
-                    setMaintenance(response)
+                    const response = await api.v1ApiRentalsIdGet(request)
+                    setMaintenances(response)
                 } catch (err: any) {
                     await ErrorHandle(err, setError)
                 }
@@ -46,11 +46,11 @@ function WorkerGetMaintenance() {
     }, [id])
 
     return(
-        <div className="w-full xl:w-[50%] 2xl:w-[35%] h-fit bg-gray-200/20 rounded-xl mx-auto p-2 xl:p-6 shadow-xl backdrop-blur-sm flex flex-col gap-4">
+        <div className="w-full xl:w-[50%] 2xl:w-[45%] h-fit bg-gray-200/20 rounded-xl mx-auto p-2 xl:p-6 shadow-xl backdrop-blur-sm flex flex-col gap-4">
             {error !== null ? (<ErrorMessage error={error} setError={setError} />) : (<></>)}
-            {maintenance && <MaintenanceFullRender maintenance={maintenance?.maintenance} />}
+            {rental && <RentalFullRender rental={rental?.rental} />}
         </div>
     )
 }
 
-export default WorkerGetMaintenance
+export default WorkerGetRental

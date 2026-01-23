@@ -37,8 +37,8 @@ public class WebSecurityConfig {
                 .requestMatchers(
                     "/v1/api/register",
                     "/v1/api/login",
-                    "/v1/api/items/itemRefresh",
-                    "/v1/api/rental/itemCheck",
+                    "/v1/api/shop/itemRefresh",
+                    "/v1/api/shop/itemCheck",
                     "/swagger-ui/**",
                     "/swagger-ui/index.html",
                     "/v3/api-docs/**",

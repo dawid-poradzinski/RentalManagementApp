@@ -37,10 +37,10 @@ function MaintenanceFullRender(props: Props) {
                             {props.maintenance.date.toLocaleString()}
                         </div>
                         <div className="w-full h-full shadow-md p-2 rounded-xl backdrop-blur-lg bg-slate-50/20 text-xl font-semibold flex gap-2">
-                            <div className="bg-rose-600 w-[50%] h-fit p-2 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
+                            <div className="bg-linear-to-bl from-rose-500 to-red-700 w-[50%] h-fit p-2 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
                                 Delete
                             </div>
-                            <div className="bg-amber-200 w-[50%] h-fit p-2 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
+                            <div className="bg-linear-to-bl from-amber-200 to-yellow-300 w-[50%] h-fit p-2 rounded-xl shadow-xl backdrop-blur-lg text-center transition-transform transform hover:-translate-y-1 cursor-pointer">
                                 Modify
                             </div>
                         </div>

@@ -60,14 +60,14 @@ public class Rental {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private BuyerEntity buyer;
 
-    public void addItem(Item item) {
+    public void addItem(Item item, BigDecimal priceModifier) {
         RentalItem rentalItem = new RentalItem();
 
         rentalItem.setId(new RentalItem.RentalItemId());
 
         rentalItem.setRental(this);
         rentalItem.setItem(item);
-        rentalItem.setPrice(item.getPriceAmount());
+        rentalItem.setPrice(item.getPriceAmount().multiply(priceModifier));
         rentalItem.setCurrency(item.getPriceCurrency());
 
         this.items.add(rentalItem);

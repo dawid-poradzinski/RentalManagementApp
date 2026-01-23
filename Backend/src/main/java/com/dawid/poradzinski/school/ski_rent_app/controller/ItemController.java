@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
-import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshParams;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
 import com.dawid.poradzinski.school.ski_rent_app.service.ItemService;
 
@@ -45,19 +44,14 @@ public class ItemController {
     }
     
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<ResponseGetSingleItem> getItem(@PathVariable Long id) throws NotFoundException {
         return ResponseEntity.ok(itemService.getItem(id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<ResponseGetId> deleteItem(@PathVariable Long id) throws NotFoundException {
         return ResponseEntity.status(org.springframework.http.HttpStatus.GONE).body(itemService.deleteItem(id));
-    }
-    
-    @GetMapping("/itemRefresh")
-    public ResponseEntity<ResponseGetMultipleItems> getItemRefresh(@ParameterObject GetItemRefreshParams params) {
-        return ResponseEntity.ok(itemService.getItemRefresh(params));
     }
     
 }

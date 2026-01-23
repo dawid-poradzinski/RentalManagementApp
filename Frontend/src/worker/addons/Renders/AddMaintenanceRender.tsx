@@ -95,7 +95,7 @@ function AddMaintenanceRender(props: Props) {
                                 </option>
                             ))}
                         </select>
-                        <button type="submit" className="p-3 px-10 bg-sky-400 rounded-xl backdrop-blur-xl shadow-xl cursor-pointer transition-transform transform hover:-translate-y-1">Add</button>
+                        <button type="submit" className="p-3 px-10 bg-linear-to-bl from-sky-500 to-indigo-500 rounded-xl backdrop-blur-xl shadow-xl cursor-pointer transition-transform transform hover:-translate-y-1">Add</button>
                     </div>
                 </form>
             </div>

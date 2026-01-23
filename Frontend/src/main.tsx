@@ -18,12 +18,30 @@ import AuthLogin from './auth/AuthLogin.tsx';
 import AuthRegister from './auth/AuthRegister.tsx';
 import AuthProvider from './auth/AuthContext.tsx';
 import ProtectedRoute from './auth/ProtectedRoute.tsx';
+import WorkerGetRentals from './worker/pages/rentals/WorkerGetRentals.tsx';
+import WorkerGetRental from './worker/pages/rentals/WorkerGetRental.tsx';
+import WelcomeWebsite from './user/WelcomeWebsite.tsx';
+import ItemRefresh from './user/ShopFlow/ItemRefresh.tsx';
+import ShopProvider from './user/ShopContext.tsx';
+import ItemCheck from './user/ShopFlow/ItemCheck.tsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
     children: [
+      {
+        index: true,
+        Component: WelcomeWebsite
+      },
+      {
+        path: "refresh",
+        Component: ItemRefresh
+      },
+      {
+        path: "check",
+        Component: ItemCheck
+      },
       {
         path: "auth",
         Component: AuthWebsite,
@@ -98,7 +116,20 @@ const router = createBrowserRouter([
           },
           {
             path: "rentals",
-            Component: WorkerRentalMenu
+            children: [
+              {
+                index: true,
+                Component: WorkerRentalMenu,
+              },
+              {
+                path: "find",
+                Component: WorkerGetRentals
+              },
+              {
+                path: ":id",
+                Component: WorkerGetRental
+              }
+            ]
           }
         ]
       }
@@ -110,6 +141,8 @@ const root = document.getElementById("root")!;
 
 ReactDOM.createRoot(root).render(
   <AuthProvider>
-    <RouterProvider router={router} />
+    <ShopProvider>
+      <RouterProvider router={router} />
+    </ShopProvider>
   </AuthProvider>
 )

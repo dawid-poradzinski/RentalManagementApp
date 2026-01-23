@@ -16,10 +16,8 @@ import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
 import com.dawid.poradzinski.school.ski_rent_app.addons.exceptions.NotFoundException;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemCategoryMapper;
 import com.dawid.poradzinski.school.ski_rent_app.addons.mapper.ItemMapper;
-import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshParams;
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemsParams;
 import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.Item.BasicItemSpecification;
-import com.dawid.poradzinski.school.ski_rent_app.addons.specifications.Item.ItemRefreshSpecification;
 import com.dawid.poradzinski.school.ski_rent_app.repository.ItemCategoryRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
 import com.dawid.poradzinski.school.ski_rent_app.sql.ItemCategory;
@@ -94,17 +92,5 @@ public class ItemService {
         return new ResponseGetId()
                 .timestamp(OffsetDateTime.now())
                 .id(id);
-    }
-
-    public ResponseGetMultipleItems getItemRefresh(GetItemRefreshParams params) {
-        
-        var page = PageRequest.of(params.getPage(), params.getSize(), Sort.by("addDate").descending());
-
-        Page<Item> items = itemRepository.findAll(ItemRefreshSpecification.filter(params), page);
-
-        return new ResponseGetMultipleItems()
-                .timestamp(OffsetDateTime.now())
-                .items(itemMapper.mapItemsToListItemEntity(items.toList()))
-                .pages(itemMapper.mapItemsToPages(items, params)); 
     }
 }
