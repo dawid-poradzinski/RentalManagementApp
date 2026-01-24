@@ -37,13 +37,20 @@ public class WebSecurityConfig {
                 .requestMatchers(
                     "/v1/api/register",
                     "/v1/api/login",
+                    "/v1/api/me",
+                    "/v1/api/logout",
                     "/v1/api/shop/itemRefresh",
                     "/v1/api/shop/itemCheck",
                     "/swagger-ui/**",
                     "/swagger-ui/index.html",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
-                    "/webjars/**"
+                    "/webjars/**",
+                    "/index.html",
+                    "/index.html/**",
+                    "/",
+                    "/assets/**",
+                    "/**.png"
                 ).permitAll()
                 .requestMatchers(
                     HttpMethod.DELETE,
@@ -55,13 +62,24 @@ public class WebSecurityConfig {
         return http.build();   
     }
 
-    @Bean
+    @Bean(name = "corsConfigurationSource")
     @Profile("dev")
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean(name = "corsConfigurationSource")
+    @Profile("!dev")
+    public CorsConfigurationSource corsConfigurationSourceDocker() {
+        CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
