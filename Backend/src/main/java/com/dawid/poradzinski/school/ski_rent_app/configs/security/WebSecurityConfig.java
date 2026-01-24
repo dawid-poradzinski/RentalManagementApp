@@ -41,6 +41,7 @@ public class WebSecurityConfig {
                     "/v1/api/logout",
                     "/v1/api/shop/itemRefresh",
                     "/v1/api/shop/itemCheck",
+                    "/v1/api/shop/itemShop",
                     "/swagger-ui/**",
                     "/swagger-ui/index.html",
                     "/v3/api-docs/**",

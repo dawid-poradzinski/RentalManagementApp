@@ -21,14 +21,9 @@ function WorkerGetRentals() {
     const [loading, setLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0)
     const [pageSize, setPageSize] = useState<number>(10)
-    const [firstRender, setFirstRender] = useState<boolean>(true)
 
     useEffect(() => {
         async function GetRentals() {
-            if (firstRender) {
-                setFirstRender(false)
-                return
-            }
             const api = new RentalsApi(new Configuration({
                 credentials: "include"
             })) 
@@ -89,8 +84,6 @@ function WorkerGetRentals() {
             status: status,
             surname: surname
         }
-
-        console.log(newFilter)
 
         if (JSON.stringify(filter) !== JSON.stringify(newFilter)) {
             setFilter(newFilter)

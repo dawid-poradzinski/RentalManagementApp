@@ -56,7 +56,6 @@ function ItemShopSummary() {
                 }
             }
         }
-
         try {
             const response = await api.v1ApiShopItemShopPost(request)
             clearKoszyk()

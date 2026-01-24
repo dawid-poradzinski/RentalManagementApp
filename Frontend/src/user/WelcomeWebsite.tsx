@@ -15,7 +15,7 @@ function WelcomeWebsite() {
                 </p>
             </div>
             <div className="w-full h-1/2 items-center justify-center gap-4 flex">
-                <Link to="/refresh" className="bg-linear-to-bl from-sky-600 to-indigo-700 rounded-xl shadow-xl backdrop-blur-xl p-4 px-10 text-white cursor-pointer transition-transform transform hover:-translate-y-1 ">Rent now</Link>
+                <Link to="/refresh" className="bg-linear-to-bl from-sky-600 to-indigo-700 rounded-xl shadow-xl backdrop-blur-xl p-4 px-10 text-white cursor-pointer transition-transform transform hover:-translate-y-1">Rent now</Link>
                 <button className="bg-linear-to-bl from-white to--200 rounded-xl shadow-xl backdrop-blur-xl p-4 px-7 text-black cursor-pointer transition-transform transform hover:-translate-y-1 ">View locations</button>
             </div>
             <div className="w-full h-fit flex items-center justify-center">

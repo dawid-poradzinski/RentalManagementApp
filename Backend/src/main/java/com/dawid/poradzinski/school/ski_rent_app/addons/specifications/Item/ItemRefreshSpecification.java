@@ -3,6 +3,7 @@ package com.dawid.poradzinski.school.ski_rent_app.addons.specifications.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openapitools.model.RentalStatusTypeEnum;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.dawid.poradzinski.school.ski_rent_app.addons.params.GetItemRefreshParams;
@@ -46,6 +47,7 @@ public class ItemRefreshSpecification {
                 subquery.select(ri.get("item").get("id"))
                         .where(
                             cb.equal(ri.get("item").get("id"), root.get("id")),
+                            cb.notEqual(rental.get("status"), RentalStatusTypeEnum.FINISHED),
                             cb.lessThanOrEqualTo(rental.get("rentalStart"), params.getTo()),
                             cb.greaterThanOrEqualTo(rental.get("rentalEnd"), params.getFrom())
                         );
