@@ -30,7 +30,7 @@ function App() {
               <Link to={"/auth/login"} className="px-2 py-2 bg-gray-700 rounded flex items-center gap-2 cursor-pointer hover:bg-slate-300/20">
                 <IconUser stroke={2} size={30} />
                 <div className="text-sm">
-                Zaloguj się
+                Login
                 </div>
               </Link>
             ) : (

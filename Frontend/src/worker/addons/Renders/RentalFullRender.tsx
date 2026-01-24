@@ -1,6 +1,7 @@
 import { IconPhone, IconPhoneFilled, IconUserFilled } from "@tabler/icons-react"
 import { RentalStatusTypeEnum, type FullRentalEntity } from "../../../../generated-ts/models"
 import ItemInRentalRender from "./ItemInRentalRender"
+import { Link, useNavigate } from "react-router-dom"
 
 type Props = {rental: FullRentalEntity}
 
@@ -33,6 +34,9 @@ function getRentalTimeStatus(endDate: Date, status: RentalStatusTypeEnum) {
 }
 
 function RentalFullRender(props: Props) {
+
+    const navigate = useNavigate()
+    
     return(
         <div className="w-full h-full flex flex-col gap-4">
             <div className="w-full h-20 text-3xl font-bold bg-slate-200/50 rounded-xl flex items-center justify-between p-4 shadow-xl backdrop-blur-xl">
@@ -105,6 +109,9 @@ function RentalFullRender(props: Props) {
                     </div>
                 </div>
             </div>
+            <button onClick={() => navigate("close", {state: props.rental})} className="bg-linear-to-bl from-rose-500 to-red-700 p-4 w-fit rounded-xl shadow-xl backdrop-blur-xl">
+            Close rental
+            </button>
         </div>
     )
 }
