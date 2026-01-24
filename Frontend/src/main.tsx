@@ -25,6 +25,9 @@ import ItemRefresh from './user/ShopFlow/ItemRefresh.tsx';
 import ShopProvider from './user/ShopContext.tsx';
 import ItemCheck from './user/ShopFlow/ItemCheck.tsx';
 import ItemCheckResult from './user/ShopFlow/ItemCheckResult.tsx';
+import ItemShop from './user/ShopFlow/shop/ItemShop.tsx';
+import ItemShopBuyer from './user/ShopFlow/shop/itemShopBuyer.tsx';
+import ItemShopSummary from './user/ShopFlow/shop/ItemShopSummary.tsx';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +52,23 @@ const router = createBrowserRouter([
           {
             path: "result",
             Component: ItemCheckResult
+          }
+        ]
+      },
+      {
+        path: "shop",
+        children: [
+          {
+            index: true,
+            Component: ItemShop
+          },
+          {
+            path: "buyer",
+            Component: ItemShopBuyer
+          },
+          {
+            path: "summary",
+            Component: ItemShopSummary
           }
         ]
       },

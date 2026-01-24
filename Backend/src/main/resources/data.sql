@@ -3,6 +3,8 @@ INSERT INTO person VALUES (1, 'user0', 'Dawid', '555666000', 'USER', 'NOWAK'),
 (3, 'admin0', 'Admin', '555888000', 'ADMIN', 'NOWAK'),
 (4, 'worker0', 'Worker', '555999000', 'WORKER', 'NOWAK');
 
+-- aaa password
+
 INSERT INTO person_private VALUES
 (1, '$2a$10$.E6HmCKnv9XJbBIZdm.Nk.sSLdzXbfhgY1jEvbtFTk5t4Ehf2pCNK', 1),
 (2, '$2a$10$.E6HmCKnv9XJbBIZdm.Nk.sSLdzXbfhgY1jEvbtFTk5t4Ehf2pCNK', 2),

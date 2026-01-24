@@ -24,7 +24,8 @@ function AuthRegister() {
                 timestamp: new Date(),
                 errors: [DefaultErrorMessage("Login input error", "Login cannot be empty")]
             }
-            setError(error);
+            setError(error)
+            return
         }
 
         const password = formData.get("password")
@@ -33,7 +34,8 @@ function AuthRegister() {
                 timestamp: new Date(),
                 errors: [DefaultErrorMessage("Password input error", "Password cannot be empty")]
             }
-            setError(error);
+            setError(error)
+            return
         }
 
         const phone = formData.get("phone")
@@ -42,7 +44,8 @@ function AuthRegister() {
                 timestamp: new Date(),
                 errors: [DefaultErrorMessage("Phone input error", "Phobe cannot be empty")]
             }
-            setError(error);
+            setError(error)
+            return
         }
 
         const name = formData.get("name")
@@ -51,7 +54,8 @@ function AuthRegister() {
                 timestamp: new Date(),
                 errors: [DefaultErrorMessage("Name input error", "Name cannot be empty")]
             }
-            setError(error);
+            setError(error)
+            return
         }
 
         const surname = formData.get("surname")
@@ -60,7 +64,8 @@ function AuthRegister() {
                 timestamp: new Date(),
                 errors: [DefaultErrorMessage("Surname input error", "Surname cannot be empty")]
             }
-            setError(error);
+            setError(error)
+            return
         }
 
         const api = new AuthApi(new Configuration({

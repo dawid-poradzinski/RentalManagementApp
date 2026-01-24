@@ -917,6 +917,7 @@ components:
         - rental
         - items
         - paid
+        - buyer
       properties:
         token:
           type: string
@@ -1027,7 +1028,6 @@ components:
         - name
         - surname
         - phone
-        - personId
       properties:
         name:
           type: string

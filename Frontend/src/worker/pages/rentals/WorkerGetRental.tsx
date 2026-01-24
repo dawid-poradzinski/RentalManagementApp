@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { ResponseErrorModel, ResponseGetSingleRental } from "../../../../generated-ts/models";
 import DefaultErrorMessage from "../../../addons/Error/DefaultErrorMessage";
 import { RentalsApi, type V1ApiRentalsIdGetRequest } from "../../../../generated-ts/apis/RentalsApi";
@@ -11,12 +11,12 @@ import RentalFullRender from "../../addons/Renders/RentalFullRender";
 function WorkerGetRental() {
     
     const { id } = useParams();
-    const [rental, setMaintenances] = useState<ResponseGetSingleRental | null>(null)
+    const [rental, setRental] = useState<ResponseGetSingleRental | null>(null)
     const [error, setError] = useState<ResponseErrorModel | null>(null);
-
+    
     useEffect(() => {
 
-        async function getMaintenancesForId(num: string | undefined) {
+        async function getRentalForId(num: string | undefined) {
             const numId = num ? Number(num) : NaN;
             if (Number.isNaN(numId) || numId < 0) {
                 const error : ResponseErrorModel = {
@@ -34,14 +34,14 @@ function WorkerGetRental() {
                 
                 try {
                     const response = await api.v1ApiRentalsIdGet(request)
-                    setMaintenances(response)
+                    setRental(response)
                 } catch (err: any) {
                     await ErrorHandle(err, setError)
                 }
             }
         }
 
-        getMaintenancesForId(id)
+        getRentalForId(id)
 
     }, [id])
 

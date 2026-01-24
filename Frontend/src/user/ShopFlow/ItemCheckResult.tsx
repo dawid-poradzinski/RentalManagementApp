@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate, useNavigation } from "react-router-dom"
 import type { ItemEntity, ResponseItemCheck } from "../../../generated-ts/models"
 import { useContext, useEffect, useState } from "react"
 import { type ItemInKoszyk, ShopContext } from '../ShopContext';
-import ItemInKoszykRender from "../addons/renders/ItemInKoszykRender";
+import ItemAfterCheckRender from "../addons/renders/ItemAfterCheckRender";
 
 function ItemCheckResult() {
     const {changeKoszyk, setToken, shopInfo, clearKoszyk} = useContext(ShopContext)
@@ -35,11 +35,6 @@ function ItemCheckResult() {
         }
     }
 
-    function removeFromValidAndKoszyk() {
-
-    }
-
-
     useEffect(() => {
         if (state === undefined) {
             return
@@ -58,7 +53,7 @@ function ItemCheckResult() {
                         <div className="grid grid-cols-2 xl:grid-cols-4 gap-2">
                             {valid && valid.length > 0 ? (
                                     valid.map((item) => (
-                                        <ItemInKoszykRender item={item} />
+                                        <ItemAfterCheckRender item={item} valid={true} setValid={setValid} />
                                     ))
                                 ) : (
                                     <div>not found</div>
@@ -74,7 +69,7 @@ function ItemCheckResult() {
                         <div className="grid grid-cols-2 xl:grid-cols-4 gap-2">
                             {notValid && notValid.length > 0 ? (
                                     notValid.map((item) => (
-                                        <ItemInKoszykRender item={item} />
+                                        <ItemAfterCheckRender item={item} valid={false} setValid={setNotValid} />
                                     ))
                                 ) : (
                                     <div>not found</div>
@@ -86,7 +81,7 @@ function ItemCheckResult() {
             <div className="w-full h-fit p-4 flex justify-between font-bold text-xl flex-col xl:flex-row gap-4 xl:gap-0">
                 <button onClick={() => {clearKoszyk(), navigate("/")}} className="bg-linear-to-tl from-yellow-300 to-amber-300 py-2 px-10 rounded-xl shadow-xl backdrop-blur-xl cursor-pointer transition-transform transform hover:-translate-y-1">Cancel</button>
                 <Link to="/refresh" className="bg-linear-to-bl from-sky-600 to-indigo-700 text-white py-2 px-10 rounded-xl shadow-xl backdrop-blur-xl cursor-pointer transition-transform transform hover:-translate-y-1">Add items</Link>
-                <button className="bg-linear-to-bl from-lime-500 to-green-500 py-2 px-10 rounded-xl shadow-xl backdrop-blur-xl cursor-pointer transition-transform transform hover:-translate-y-1">Rent</button>
+                {valid?.length ? (<Link to={"/shop"} className="bg-linear-to-bl from-lime-500 to-green-500 py-2 px-10 rounded-xl shadow-xl backdrop-blur-xl cursor-pointer transition-transform transform hover:-translate-y-1">Rent</Link>) : (<></>)}
             </div>
         </div>
     )
