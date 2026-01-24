@@ -43,7 +43,7 @@ function WorkerGetRental() {
 
         getRentalForId(id)
 
-    }, [id])
+    }, [])
 
     return(
         <div className="w-full xl:w-[50%] 2xl:w-[45%] h-fit bg-gray-200/20 rounded-xl mx-auto p-2 xl:p-6 shadow-xl backdrop-blur-sm flex flex-col gap-4">

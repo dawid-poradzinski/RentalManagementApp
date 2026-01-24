@@ -28,6 +28,8 @@ import ItemCheckResult from './user/ShopFlow/ItemCheckResult.tsx';
 import ItemShop from './user/ShopFlow/shop/ItemShop.tsx';
 import ItemShopBuyer from './user/ShopFlow/shop/itemShopBuyer.tsx';
 import ItemShopSummary from './user/ShopFlow/shop/ItemShopSummary.tsx';
+import WorkerCloseRental from './worker/pages/rentals/WorkerReturnRental.tsx';
+import WorkerReturnRental from './worker/pages/rentals/WorkerReturnRental.tsx';
 
 const router = createBrowserRouter([
   {
@@ -157,7 +159,16 @@ const router = createBrowserRouter([
               },
               {
                 path: ":id",
-                Component: WorkerGetRental
+                children: [
+                  {
+                    index: true,
+                    Component: WorkerGetRental,
+                  },
+                  {
+                    path: "return",
+                    Component: WorkerReturnRental
+                  }
+                ]
               }
             ]
           }

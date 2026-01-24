@@ -23,7 +23,6 @@ function ItemCheckResult() {
     }
 
     function handleAfterFlightCheck() {
-        console.log(response)
         const validFromResponse = mapToItemInKoszyk(response.valid)
         setValid(validFromResponse)
         setNotValid(mapToItemInKoszyk(response.notValid))

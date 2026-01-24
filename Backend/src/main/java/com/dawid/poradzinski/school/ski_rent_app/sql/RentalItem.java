@@ -43,6 +43,7 @@ public class RentalItem {
     @EqualsAndHashCode
     @AllArgsConstructor
     @NoArgsConstructor
+    @Getter
     public static class RentalItemId implements Serializable {
 
         private Long rentalId;

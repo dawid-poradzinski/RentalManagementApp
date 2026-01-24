@@ -46,6 +46,8 @@ public class Rental {
 
     private OffsetDateTime rentalEnd;
 
+    private OffsetDateTime rentalReturn;
+
     private BigDecimal paidPrice;
 
     private String paidCurrency;

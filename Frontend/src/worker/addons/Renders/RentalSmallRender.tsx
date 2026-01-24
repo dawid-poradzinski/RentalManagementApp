@@ -14,9 +14,10 @@ function colorType(type: RentalStatusTypeEnum) {
     }
 }
 
-function getRentalTimeStatus(endDate: Date, status: RentalStatusTypeEnum) {
-    const now = status == RentalStatusTypeEnum.Reserved ? Date.now() : endDate.valueOf()
-    const end = endDate.valueOf();
+
+function getRentalTimeStatus(rental: SmallRentalEntity) {
+    const now = rental.rentalStatus == RentalStatusTypeEnum.Reserved ? Date.now() : rental.rentalReturn.valueOf()
+    const end = rental.rentalDate.to.valueOf();
     const diff = end - now;
     const abs = Math.abs(diff);
     const hours = Math.floor(abs / (1000 * 60 * 60));
@@ -26,15 +27,18 @@ function getRentalTimeStatus(endDate: Date, status: RentalStatusTypeEnum) {
     const formatted = `${hh}h:${mm}m`
     const isLate = diff < 0;
     return (
-        <div className={isLate ? "text-red-500" : "text-green-500"}>
-            {(isLate ? "-" : "+") + formatted}
+        <div className="flex flex-col gap-2">
+            {(rental.rentalStatus == RentalStatusTypeEnum.Returning || rental.rentalStatus == RentalStatusTypeEnum.Finished ? "Returned:" : "Remaining time:")}
+            <span className={isLate ? "text-red-500" : "text-green-500"}>
+                { (isLate ? "-" : "+") + formatted}
+            </span>
         </div>
     )
 }
 
 function RentalSmallRender(props: Props) {
     return(
-        <Link to={"/worker/rentals/" + props.rental.id} className="w-full max-h-50 h-full bg-gray-200/40 hover:bg-gray-700/10 p-4 shadow-xl rounded-xl backdrop-blur-xl flex flex-col gap-2">
+        <Link to={"/worker/rentals/" + props.rental.id} className="w-full h-fit bg-gray-200/40 hover:bg-gray-700/10 p-4 shadow-xl rounded-xl backdrop-blur-xl flex flex-col gap-2">
             <div className="w-full h-20 text-white flex justify-center h-fit">
                 {colorType(props.rental.rentalStatus)}
             </div>
@@ -53,18 +57,22 @@ function RentalSmallRender(props: Props) {
                 <div>
                     {props.rental.rentalDate.from.toLocaleTimeString()}H - {props.rental.rentalDate.to.toLocaleTimeString()}H
                 </div>
-                {getRentalTimeStatus(props.rental.rentalDate.to, props.rental.rentalStatus)}
             </div>
-            <div className="w-full h-8 flex gap-2">
-                <div className="w-1/2 flex bg-white/7 p-1 rounded-md shadow-md backdrop-blur-xl">
-                    <IconCurrencyDollar/>
-                    {props.rental.totalPrice.priceAmount + " "} 
-                    {props.rental.totalPrice.priceCurrency}
+            <div className="w-full h-fit flex gap-2">
+                <div className="w-1/2 flex flex-col bg-white/7 p-1 rounded-md shadow-md backdrop-blur-xl gap-2">
+                    <div className="flex">
+                        <IconCurrencyDollar/>
+                        {props.rental.totalPrice.priceAmount + " "} 
+                        {props.rental.totalPrice.priceCurrency}
+                    </div>
+                    <div className="flex">
+                        <IconReceipt2/>
+                        {props.rental.paidPrice.priceAmount + " "} 
+                        {props.rental.totalPrice.priceCurrency}
+                    </div>
                 </div>
                 <div className="w-1/2 flex bg-white/7 p-1 rounded-md shadow-md backdrop-blur-xl">
-                    <IconReceipt2/>
-                    {props.rental.paidPrice.priceAmount + " "} 
-                    {props.rental.totalPrice.priceCurrency}
+                    {getRentalTimeStatus(props.rental)}
                 </div>
             </div>
         </Link>

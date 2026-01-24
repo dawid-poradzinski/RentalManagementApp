@@ -1,7 +1,11 @@
 import { IconPhone, IconPhoneFilled, IconUserFilled } from "@tabler/icons-react"
-import { RentalStatusTypeEnum, type FullRentalEntity } from "../../../../generated-ts/models"
+import { RentalStatusTypeEnum, type ResponseErrorModel, type FullRentalEntity, type SmallRentalEntity } from "../../../../generated-ts/models"
 import ItemInRentalRender from "./ItemInRentalRender"
 import { Link, useNavigate } from "react-router-dom"
+import { RentalsApi, type V1ApiRentalsIdClosePostRequest, type V1ApiRentalsIdPayPostRequest } from "../../../../generated-ts/apis/RentalsApi"
+import ErrorHandle from "../../../addons/Error/ErrorHandle"
+import { useState } from "react"
+import { Configuration } from "../../../../generated-ts/runtime"
 
 type Props = {rental: FullRentalEntity}
 
@@ -15,9 +19,9 @@ function colorType(type: RentalStatusTypeEnum) {
     }
 }
 
-function getRentalTimeStatus(endDate: Date, status: RentalStatusTypeEnum) {
-    const now = status == RentalStatusTypeEnum.Reserved ? Date.now() : endDate.valueOf()
-    const end = endDate.valueOf();
+function getRentalTimeStatus(rental: SmallRentalEntity) {
+    const now = rental.rentalStatus == RentalStatusTypeEnum.Reserved ? Date.now() : rental.rentalReturn.valueOf()
+    const end = rental.rentalDate.to.valueOf();
     const diff = end - now;
     const abs = Math.abs(diff);
     const hours = Math.floor(abs / (1000 * 60 * 60));
@@ -27,8 +31,11 @@ function getRentalTimeStatus(endDate: Date, status: RentalStatusTypeEnum) {
     const formatted = `${hh}h:${mm}m`
     const isLate = diff < 0;
     return (
-        <div className={isLate ? "text-red-500" : "text-green-500"}>
-            {(isLate ? "-" : "+") + formatted}
+        <div className="flex gap-2">
+            {(rental.rentalStatus == RentalStatusTypeEnum.Returning ? "Returned:" : "Remaining time:")}
+            <span className={isLate ? "text-red-500" : "text-green-500"}>
+                { (isLate ? "-" : "+") + formatted}
+            </span>
         </div>
     )
 }
@@ -36,7 +43,41 @@ function getRentalTimeStatus(endDate: Date, status: RentalStatusTypeEnum) {
 function RentalFullRender(props: Props) {
 
     const navigate = useNavigate()
-    
+    const [error, setError] = useState<ResponseErrorModel | null>(null)
+    console.log(props.rental.rental.paidPrice, props.rental.rental.totalPrice)
+
+    async function payRemaining() {
+        const api = new RentalsApi(new Configuration({
+            credentials: "include"
+        }))
+        const request: V1ApiRentalsIdPayPostRequest = {
+            id: props.rental.rental.id
+        }
+        
+        try {
+            await api.v1ApiRentalsIdPayPost(request);
+            navigate(0)
+        } catch (error: any) {
+            await ErrorHandle(error, setError);
+        }
+    }
+
+    async function closeRental() {
+        const api = new RentalsApi(new Configuration({
+            credentials: "include"
+        }))
+        const request: V1ApiRentalsIdClosePostRequest = {
+            id: props.rental.rental.id
+        }
+        
+        try {
+            await api.v1ApiRentalsIdClosePost(request);
+            navigate(0)
+        } catch (error: any) {
+            await ErrorHandle(error, setError);
+        }
+    }
+
     return(
         <div className="w-full h-full flex flex-col gap-4">
             <div className="w-full h-20 text-3xl font-bold bg-slate-200/50 rounded-xl flex items-center justify-between p-4 shadow-xl backdrop-blur-xl">
@@ -82,7 +123,7 @@ function RentalFullRender(props: Props) {
                             Rented to: {props.rental.rental.rentalDate.to.toLocaleTimeString()}
                         </div>
                         <div className="flex text-2xl">
-                            Remaining: {getRentalTimeStatus(props.rental.rental.rentalDate.to, props.rental.rental.rentalStatus)}
+                            {getRentalTimeStatus(props.rental.rental)}
                         </div>
                     </div>
                 </div>
@@ -109,9 +150,26 @@ function RentalFullRender(props: Props) {
                     </div>
                 </div>
             </div>
-            <button onClick={() => navigate("close", {state: props.rental})} className="bg-linear-to-bl from-rose-500 to-red-700 p-4 w-fit rounded-xl shadow-xl backdrop-blur-xl">
-            Close rental
-            </button>
+            <div className="w-full flex justify-center">
+                {
+                    props.rental.rental.rentalStatus == RentalStatusTypeEnum.Finished ?
+                    <></>
+                    :
+                    props.rental.rental.rentalStatus == RentalStatusTypeEnum.Reserved ?
+                        <button onClick={() => navigate("return", {state: props.rental})} className="button font-bold text-white bg-linear-to-bl from-rose-500 to-red-700 p-4 w-fit rounded-xl shadow-xl backdrop-blur-xl">
+                        Return rental
+                        </button>
+                    : 
+                        props.rental.rental.totalPrice.priceAmount != props.rental.rental.paidPrice.priceAmount ?
+                            <button onClick={() => payRemaining()} className="button font-bold text-white bg-linear-to-bl from-rose-500 to-red-700 p-4 w-fit rounded-xl shadow-xl backdrop-blur-xl">
+                                Pay rental
+                            </button>
+                            :
+                            <button onClick={() => closeRental()} className="button font-bold text-white bg-linear-to-bl from-rose-500 to-red-700 p-4 w-fit rounded-xl shadow-xl backdrop-blur-xl">
+                                Close rental
+                            </button>
+                }
+            </div>
         </div>
     )
 }

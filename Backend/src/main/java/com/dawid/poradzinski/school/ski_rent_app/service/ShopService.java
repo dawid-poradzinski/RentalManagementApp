@@ -33,7 +33,6 @@ import com.dawid.poradzinski.school.ski_rent_app.repository.ItemRepository;
 import com.dawid.poradzinski.school.ski_rent_app.repository.PersonRepository;
 import com.dawid.poradzinski.school.ski_rent_app.repository.RentalRepository;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Item;
-import com.dawid.poradzinski.school.ski_rent_app.sql.Person;
 import com.dawid.poradzinski.school.ski_rent_app.sql.Rental;
 
 @Service
@@ -134,9 +133,9 @@ public class ShopService {
 
         BigDecimal priceModifier = calculatePriceWithDiscount(request.getRental().getFrom(), request.getRental().getTo());
 
-        BigDecimal totalPrice = items.stream().map(Item::getPriceAmount).reduce(BigDecimal.ZERO, BigDecimal::add).multiply(priceModifier);
+        BigDecimal totalPrice = items.stream().map(Item::getPriceAmount).reduce(BigDecimal.ZERO, BigDecimal::add).multiply(priceModifier).setScale(2, RoundingMode.HALF_UP);
 
-        if (request.getPaid().getPriceAmount().compareTo(totalPrice) >= 0) {
+        if (request.getPaid().getPriceAmount().compareTo(totalPrice) > 0) {
             throw new RuntimeException("Cannot pay more than items are worth:Payed more than items are worth!");
         }
 
@@ -147,20 +146,20 @@ public class ShopService {
         });
 
         Long personId = userContextService.getCurrentPersonId();
-        Person person = personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Person not found"));
         BuyerEntity buyerEntity = request.getBuyer();
-        if (buyerEntity == null) {
-            buyerEntity = buyerEntityMapper.mapPersonToBuyerEntity(person);
-        }
-        buyerEntity.setPersonId(personId);
-        var existingBuyerEntity = buyerRepository.findByPhoneAndNameAndSurnameAndPerson_Id(buyerEntity.getPhone(), buyerEntity.getName(), buyerEntity.getSurname(), buyerEntity.getPersonId());
+        
+        rental.setBuyer(buyerEntityMapper.mapBuyerEntityToSqlBuyer(buyerEntity));
 
-        if (existingBuyerEntity.isPresent()) {
-            rental.setBuyer(existingBuyerEntity.get());
-        } else {
-            rental.setBuyer(buyerEntityMapper.mapPersonToSqlBuyerEntity(person));
+        if (personId != null) {
+            personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Person not found"));
+            buyerEntity.setPersonId(personId);
+            var existingBuyerEntity = buyerRepository.findByPhoneAndNameAndSurnameAndPerson_Id(buyerEntity.getPhone(), buyerEntity.getName(), buyerEntity.getSurname(), buyerEntity.getPersonId());
+            if (existingBuyerEntity.isPresent()) {
+                rental.setBuyer(existingBuyerEntity.get());
+            }
         }
-
+        
+        
         rental.setPaidCurrency(request.getPaid().getPriceCurrency());
         rental.setPaidPrice(request.getPaid().getPriceAmount());
         rental.setRentalStart(request.getRental().getFrom());

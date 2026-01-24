@@ -32,7 +32,8 @@ public class RentalMapper {
             .rentalPlace(dto.rental().getPlace())
             .rentalDate(new RentalDate()
                 .from(dto.rental().getRentalStart())
-                .to(dto.rental().getRentalEnd()));
+                .to(dto.rental().getRentalEnd()))
+            .rentalReturn(dto.rental().getRentalReturn());
     }
 
     public List<SmallRentalEntity> mapSqlRentalsWithPriceToSmallRentalEntities(Page<RentalWithPriceDto> dtos) {

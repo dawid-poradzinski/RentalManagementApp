@@ -553,26 +553,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_ErrorModel'
-  /v1/api/rentals/{id}/close:
-    get:
-      summary: Endpoint for getting rentals
-      tags:
-        - Rentals
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Call to close rental was successfull
-        default:
-          description: Unexpected Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_ErrorModel'
   /v1/api/rentals/{id}:
     get:
       summary: Endpoint for getting rental
@@ -591,6 +571,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response_GetSingleRental'
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/rentals/{id}/return:
+    post:
+      summary: Endpoint for returning items from rental
+      tags:
+        - Rentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/Request_ReturnRental'
+      responses:
+        '200':
+          description: Rental paused for rental
+  /v1/api/rentals/{id}/pay:
+    post:
+      summary: Pay the remaining price
+      tags:
+        - Rentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Call to pay for rental was successfull
+        default:
+          description: Unexpected Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_ErrorModel'
+  /v1/api/rentals/{id}/close:
+    post:
+      summary: Endpoint for closing rental
+      tags:
+        - Rentals
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Call to close rental was successfull
         default:
           description: Unexpected Error
           content:
@@ -710,6 +750,7 @@ components:
       enum:
       - RESERVED
       - CANCELED
+      - RETURNING
       - FINISHED
       example: RESERVED
     MaintenanceTypeEnum:
@@ -936,7 +977,27 @@ components:
         buyer:
           description: Optional buyer info override for account
           $ref: '#/components/schemas/BuyerEntity'
+    Request_ReturnRental:
+      properties:
+         maintenances:
+          type: array
+          items: 
+            $ref: '#/components/schemas/MaintenanceReturnEntity'
 
+    MaintenanceReturnEntity:
+      type: object
+      required:
+        - id
+        - type
+        - note
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          $ref: '#/components/schemas/MaintenanceTypeEnum'
+        note:
+          type: string
     ItemEntity:
       description: Returned item record
       type: object
@@ -1051,6 +1112,7 @@ components:
         - rentalDate
         - rentalStatus
         - rentalPlace
+        - rentalReturn
       properties:
         paidPrice:
           $ref: '#/components/schemas/Price'
@@ -1065,6 +1127,10 @@ components:
           $ref: '#/components/schemas/RentalStatusTypeEnum'
         rentalPlace:
           $ref: '#/components/schemas/PlacesEnum'
+        rentalReturn:
+          type: string
+          format: date-time
+          example: "2025-12-12-19:30"
     FullRentalEntity:
       type: object
       required:

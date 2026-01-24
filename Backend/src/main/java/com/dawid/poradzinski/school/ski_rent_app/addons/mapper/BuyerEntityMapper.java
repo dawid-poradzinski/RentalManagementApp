@@ -15,6 +15,10 @@ public class BuyerEntityMapper {
                 .phone(personEntity.getPhone());
     }
 
+    public com.dawid.poradzinski.school.ski_rent_app.sql.BuyerEntity mapBuyerEntityToSqlBuyer(BuyerEntity buyerEntity) {
+        return new com.dawid.poradzinski.school.ski_rent_app.sql.BuyerEntity(null, buyerEntity.getPhone(), buyerEntity.getName(), buyerEntity.getSurname(), null, null);
+    }
+
     public com.dawid.poradzinski.school.ski_rent_app.sql.BuyerEntity mapPersonToSqlBuyerEntity(Person person) {
         var returnEntity = new com.dawid.poradzinski.school.ski_rent_app.sql.BuyerEntity();
         returnEntity.setName(person.getName());
@@ -25,10 +29,14 @@ public class BuyerEntityMapper {
     }
     
     public BuyerEntity mapSqlBuyerEntityToBuyerEntity(com.dawid.poradzinski.school.ski_rent_app.sql.BuyerEntity buyerEntity) {
-        return new BuyerEntity()
+        var entity = new BuyerEntity()
                 .name(buyerEntity.getName())
-                .personId(buyerEntity.getPerson().getId())
                 .phone(buyerEntity.getPhone())
                 .surname(buyerEntity.getSurname());
+
+        if (buyerEntity.getPerson() != null) {
+            entity.setPersonId(buyerEntity.getPerson().getId());
+        }
+        return entity;
     }
 }

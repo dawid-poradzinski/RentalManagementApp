@@ -22,8 +22,8 @@ function MaintenanceFullRender(props: Props) {
             <div className="w-full h-fit flex flex-col p-4 bg-slate-50/20 shadow-xl backdrop-blur-lg rounded-xl gap-2">
                 <div className="w-full h-fit flex gap-2">
                     <div className="h-57 w-[65%] flex items-center">
-                        <Link to={"/worker/items/" + props.maintenance.itemId} className="w-full aspect-square flex flex-col text-center text-white font-semibold gap-4">
-                            <img className="h-fit shadow-xl p-4 rounded-xl backdrop-blur-lg bg-slate-50/20" src="/Placeholder.png"></img>
+                        <Link to={"/worker/items/" + props.maintenance.itemId} className="w-full aspect-square flex flex-col text-center text-white font-semibold gap-4 overflow-hidden">
+                            <img className="h-fit shadow-xl p-4 rounded-xl backdrop-blur-lg bg-slate-50/20" src={props.maintenance.itemImage}></img>
                         </Link>
                     </div>
                     <div className="w-full h-57 flex flex-col gap-3">
