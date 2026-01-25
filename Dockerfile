@@ -1,6 +1,6 @@
 # OpenApi models
 
-FROM maven:3.9.11-eclipse-temurin-25-alpine AS models-build
+FROM docker.io/maven:3.9.11-eclipse-temurin-25-alpine AS models-build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN mvn clean compile -f ModelsGenerator/pom.xml
 
 # Frontend
 
-FROM node:20-alpine AS frontend-build
+FROM docker.io/node:20-alpine AS frontend-build
 
 WORKDIR /app
 
@@ -19,11 +19,12 @@ COPY Frontend ./
 COPY --from=models-build ./app/Frontend ./
 
 RUN npm install
+RUN npm install @tabler/icons@latest
 RUN npm run build
 
 # Backend
 
-FROM maven:3.9.11-eclipse-temurin-25-alpine AS backend-build
+FROM docker.io/maven:3.9.11-eclipse-temurin-25-alpine AS backend-build
 
 WORKDIR /app
 
@@ -35,7 +36,7 @@ RUN mvn clean package -f ./Backend/pom.xml
 
 # Final image
 
-FROM eclipse-temurin:25
+FROM docker.io/eclipse-temurin:25
 
 WORKDIR /app
 
