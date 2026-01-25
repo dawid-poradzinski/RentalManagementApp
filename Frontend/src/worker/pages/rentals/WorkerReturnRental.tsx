@@ -67,7 +67,7 @@ function WorkerReturnRental() {
         <div className="w-9/10 h-full bg-linear-to-tl from-white/7 to-white/10 shadow-xl rounded-xl backdrop-blur-sm p-4 mx-auto flex-col">
             <div className="w-full h-full flex flex-col gap-4">
                 <div className="w-full flex justify-center">
-                    <span className="text-3xl font-bold bg-gray-700 p-4 text-white rounded-xl shadow-xl backdrop-blur-xl">{"Closing rental: #" + rental.rental.id}</span>
+                    <span className="text-3xl font-bold bg-gray-700 p-4 text-white rounded-xl shadow-xl backdrop-blur-xl">{"Returning rental: #" + rental.rental.id}</span>
                 </div>
                 <div className="w-full h-full flex gap-4">
                     <div className="w-full md:w-1/2 h-full p-4 flex flex-col items-center gap-4">
